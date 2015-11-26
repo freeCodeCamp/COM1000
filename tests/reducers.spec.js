@@ -16,7 +16,8 @@ const setup = () => {
 };
 
 
-test('should return a default state if none is provided', (t) => {
+test('reducer.spec: Test 1 should return a default state if none is provided',
+     (t) => {
   let fixtures = setup();
   const undefinedState = undefined;
 
@@ -25,7 +26,8 @@ test('should return a default state if none is provided', (t) => {
   t.deepEqual(reducer(undefinedState, fixtures._action), fixtures._state);
 });
 
-test('should return a new state upon a valid action type', (t) => {
+test('reducer.spec: Test 2 should return a new state upon a valid action type',
+     (t) => {
   const fixtures = setup();
   let action = fixtures._action;
   let state = fixtures._state;
@@ -34,5 +36,15 @@ test('should return a new state upon a valid action type', (t) => {
 
   t.plan(1);
   t.notEqual(returnedState, state);
+});
+
+test('reducer.spec: Test 3 should return previous state on invalid action',
+     (t) => {
+  const fixtures = setup();
+  const action = {type: 'nonsense'};
+  const expected = fixtures._state;
+  const actual = reducer(expected, action);
+  t.plan(1);
+  t.deepEqual(expected, actual);
 });
 

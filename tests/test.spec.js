@@ -1,6 +1,6 @@
 import test from 'tape';
 
-test('this example should fail', (t) => {
+test('tape.spec: Test 1 should fail', (t) => {
 
   /*
    * Run the tests and see that assertions can pass even
