@@ -1,0 +1,16 @@
+{
+  "extends": "../.eslintrc",
+  "env": {
+    "mocha": true
+  },
+  "globals" : {
+    "setup": 0,
+    "assert": 0
+  },
+  "rules": {
+    "func-names": 0,
+    "no_unused_expressions": 0,
+    "no-undef-init": 0,
+    "no-undefined": 0
+  }
+}
