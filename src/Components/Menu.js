@@ -16,6 +16,14 @@ const styles = {
   },
   buttonStyle: {
     paddingRight: '5px'
+  },
+  menuStyle: {
+    width: '100%',
+    position: 'fixed',
+    top: '0px',
+    left: '0px',
+    background: 'white',
+    zIndex: '1000'
   }
 };
 
@@ -57,7 +65,7 @@ class Menu extends Component {
     });
 
     return (
-      <div>
+      <div style= {styles.menuStyle}>
         <ul>
           {MenuElements}
         </ul>
