@@ -12,7 +12,7 @@ test('#tape.spec', (t) => {
     const expected = 5;
 
     // t.pass(); This would generate a passing assertion
-    t.comment('Assetion passes');
+    t.comment('Assertion passes');
     t.equals(actual, expected);
     // t.fail(); This would generate a failing assertion
     t.comment('Assertion fails');
