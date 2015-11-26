@@ -15,36 +15,38 @@ const setup = () => {
 
 };
 
+test('#reducer.spec', (t) => {
 
-test('reducer.spec: Test 1 should return a default state if none is provided',
-     (t) => {
-  let fixtures = setup();
-  const undefinedState = undefined;
+  t.test('Test 1 should return a default state if none is provided', (t) => {
+    let fixtures = setup();
+    const undefinedState = undefined;
+    const actual = reducer(undefinedState, fixtures._action);
+    const expected = fixtures._state;
 
-  // t.plan() says how many assertions we're going to run for this test
-  t.plan(1);
-  t.deepEqual(reducer(undefinedState, fixtures._action), fixtures._state);
-});
+    // t.plan() says how many assertions we're going to run for this test
+    t.plan(1);
+    t.deepEqual(actual, expected);
+  });
 
-test('reducer.spec: Test 2 should return a new state upon a valid action type',
-     (t) => {
-  const fixtures = setup();
-  let action = fixtures._action;
-  let state = fixtures._state;
-  action.type = 'backAction';
-  const returnedState = reducer(state, action);
+  t.test('Test 2 should return a new state upon a valid action type', (t) => {
+    const fixtures = setup();
+    let action = fixtures._action;
+    action.type = 'backAction';
+    const actual = reducer(fixtures._state, action);
+    const expected = fixtures._state;
 
-  t.plan(1);
-  t.notEqual(returnedState, state);
-});
+    t.plan(1);
+    t.notEqual(actual, expected);
+  });
 
-test('reducer.spec: Test 3 should return previous state on invalid action',
-     (t) => {
-  const fixtures = setup();
-  const action = {type: 'nonsense'};
-  const expected = fixtures._state;
-  const actual = reducer(expected, action);
-  t.plan(1);
-  t.deepEqual(expected, actual);
+  t.test('Test 3 should return previous state on invalid action', (t) => {
+    const fixtures = setup();
+    const action = {type: 'nonsense'};
+    const actual = reducer(expected, action);
+    const expected = fixtures._state;
+    t.plan(1);
+    t.deepEqual(actual, expected);
+  });
+  t.end();
 });
 
