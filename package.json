@@ -1,10 +1,11 @@
 {
-  "name": "ChallengeOMatic1003",
+  "name": "COM1000",
   "version": "0.0.0",
   "private": true,
   "scripts": {
     "build": "webpack",
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "test": "node node_modules/.bin/babel-tape-runner tests/**/*.js | faucet"
   },
   "dependencies": {
     "babel-core": "^6.2.1",
@@ -30,8 +31,12 @@
     "babel-loader": "^6.2.0",
     "babel-preset-es2015": "^6.1.18",
     "babel-preset-react": "^6.1.18",
+    "babel-tape-runner": "^1.3.0",
     "css-loader": "^0.23.0",
+    "faucet": "0.0.1",
+    "react-addons-test-utils": "^0.14.3",
     "style-loader": "^0.13.0",
+    "tape": "^4.2.2",
     "webpack": "^1.12.8"
   }
 }
