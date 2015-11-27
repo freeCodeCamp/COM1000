@@ -198,18 +198,22 @@ class GrandCentralStation extends Component {
                     this.props.activeChallenge).length) {
       return (
           <div className = 'app'>
-          {menu}
-        {tabs}
-          <Editor id={this.props.activeChallenge.id} />
+            <div style = {{ "marginTop": "70px" }}>
+              {tabs}
+              <Editor id={this.props.activeChallenge.id} />
+            </div>
+            {menu}
           </div>
       );
     } else {
 
       return (
           <div className = 'app'>
-          {menu}
-        {tabs}
-        {selectChallenges}
+            <div style = {{ "marginTop": "70px" }}>
+              {tabs}
+              {selectChallenges}
+            </div>
+            {menu}
         </div>
       );
     }
