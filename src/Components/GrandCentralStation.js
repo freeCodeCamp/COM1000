@@ -14,6 +14,7 @@ import Menu from './Menu';
 import TabBar from './Tabs';
 import SelectChallenge from './SelectChallenge';
 import Editor from './Editor';
+import FileExplorer from './FileExplorer';
 
 import './../style.css';
 
@@ -82,29 +83,30 @@ class GrandCentralStation extends Component {
   }
 
   handleFileIsSelected(event) {
+    this.refs.leftNav.refs.fileExplorer.toggle();
 
-    let files = event.target.files;
-    for (let i in files) {
-      if (files.hasOwnProperty(i)) {
-        let file = files[i];
-        let reader = new FileReader();
-        let dispatch = this.props.dispatch;
+    // let files = event.target.files;
+    // for (let i in files) {
+    //   if (files.hasOwnProperty(i)) {
+    //     let file = files[i];
+    //     let reader = new FileReader();
+    //     let dispatch = this.props.dispatch;
 
-        reader.onload = function(upload) {
-          let newFileStoreObject = this.props.fileStore;
-          newFileStoreObject[file.name] =
-            JSON.parse(upload.target.result);
+    //     reader.onload = function(upload) {
+    //       let newFileStoreObject = this.props.fileStore;
+    //       newFileStoreObject[file.name] =
+    //         JSON.parse(upload.target.result);
 
-          loadFile(dispatch, {
-            fileStore: newFileStoreObject,
-            activeFile: file.name,
-            challenges: newFileStoreObject[file.name].challenges,
-            activeChallenge: {}
-          });
-        }.bind(this);
-        reader.readAsText(file);
-      }
-    }
+    //       loadFile(dispatch, {
+    //         fileStore: newFileStoreObject,
+    //         activeFile: file.name,
+    //         challenges: newFileStoreObject[file.name].challenges,
+    //         activeChallenge: {}
+    //       });
+    //     }.bind(this);
+    //     reader.readAsText(file);
+    //   }
+    // }
   }
 
   handleChallengeClick(id) {
@@ -172,7 +174,8 @@ class GrandCentralStation extends Component {
       elements = [
         {
           name: 'Choose File',
-          handleChange: this.handleFileIsSelected
+          // handleChange: this.handleFileIsSelected
+          action: this.handleFileIsSelected
         },
         {
           name: 'Export',
@@ -183,7 +186,8 @@ class GrandCentralStation extends Component {
       elements = [
         {
           name: 'Choose File',
-          handleChange: this.handleFileIsSelected
+          // handleChange: this.handleFileIsSelected
+          action: this.handleFileIsSelected
         },
         {
           name: 'Export',
@@ -228,6 +232,10 @@ class GrandCentralStation extends Component {
                     this.props.activeChallenge).length) {
       return (
           <div className = 'app'>
+          <FileExplorer
+        dispatch= {this.props.dispatch}
+        files= {this.props.files}
+        ref= 'leftNav' />
             <div style = {{ "marginTop": "70px" }}>
               {tabs}
               <Editor id={this.props.activeChallenge.id} />
@@ -239,6 +247,10 @@ class GrandCentralStation extends Component {
 
       return (
           <div className = 'app'>
+          <FileExplorer
+        dispatch= {this.props.dispatch}
+        files= {this.props.files}
+        ref= 'leftNav' />
             <div style = {{ "marginTop": "70px" }}>
               {tabs}
               {selectChallenges}
@@ -258,6 +270,7 @@ GrandCentralStation.propTypes = {
   activeFile: React.PropTypes.string,
   view: React.PropTypes.string.isRequired,
   activeChallenge: React.PropTypes.object,
-  challenges: React.PropTypes.array
+  challenges: React.PropTypes.array,
+  files: React.PropTypes.array.isRequired
 };
 

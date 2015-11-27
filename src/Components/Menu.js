@@ -44,10 +44,11 @@ class Menu extends Component {
       let potentialInput;
       if (elem.name === 'Choose File') {
         potentialInput = (
-          <input
-            style = {styles.fileInput}
-            type = 'file' multiple>
-          </input>
+          <p></p>
+          // <input
+          //   style = {styles.fileInput}
+          //   type = 'file' multiple>
+          // </input>
         );
       }
       return (

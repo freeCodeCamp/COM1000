@@ -31,6 +31,15 @@ app.post('/export', function(req, res, next) {
   });
 });
 
+app.get('/files', (req, res, next) => {
+  fs.readdir(config.fccPath, (err, files) => {
+    if (err) {
+      return next(err);
+    }
+    res.json(files);
+  });
+});
+
 app.get('/mongoid', function(req, res, next) {
   var objectId = new ObjectID();
   res.json({objectId: objectId});

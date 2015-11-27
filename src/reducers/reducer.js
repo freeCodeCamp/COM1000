@@ -2,7 +2,8 @@ const initialState = {
   'fileStore': {},
   'activeFile': '',
   'activeChallenge': {},
-  'view': 'ChallengeSelect'
+  'view': 'ChallengeSelect',
+  'files': []
 };
 
 function parser(key) {
@@ -65,6 +66,9 @@ export default function(prevState = initialState, action) {
       return (Object.assign({}, prevState, action.payload));
 
     case 'backAction':
+      return (Object.assign({}, prevState, action.payload));
+
+  case 'loadFileExplorer':
       return (Object.assign({}, prevState, action.payload));
 
     default:
