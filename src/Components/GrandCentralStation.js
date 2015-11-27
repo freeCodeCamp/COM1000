@@ -34,6 +34,29 @@ class GrandCentralStation extends Component {
     this.handleChallengeClick = this.handleChallengeClick.bind(this);
   }
 
+  handlePrevNext() {
+    this.backView();
+    setTimeout(() => {
+
+    const dispatch = this.props.dispatch;
+    const motion = arguments[0];
+    const challenges = this.props.challenges;
+    const indexOfCurrentChallenge = challenges.findIndex(elem => {
+      return elem.id === this.props.activeChallenge.id;
+    });
+    if (indexOfCurrentChallenge + motion < 0
+        || indexOfCurrentChallenge + motion > challenges.length - 1) {
+      return;
+    }
+
+    loadChallenge(dispatch, {
+      'activeChallenge':
+      this.props.challenges[indexOfCurrentChallenge + motion],
+      'view': 'ChallengeEdit'
+    });
+    });
+  }
+
   backView() {
     let dispatch = this.props.dispatch;
     backAction(dispatch, {
@@ -170,6 +193,14 @@ class GrandCentralStation extends Component {
         {
           name: 'Back',
           action: this.backView
+        },
+        {
+          name: 'Prev',
+          action: this.handlePrevNext.bind(this, -1)
+        },
+        {
+          name: 'Next',
+          action: this.handlePrevNext.bind(this, 1)
         }
       ];
     }
@@ -227,6 +258,7 @@ GrandCentralStation.propTypes = {
   fileStore: React.PropTypes.object,
   activeFile: React.PropTypes.string,
   view: React.PropTypes.string.isRequired,
-  activeChallenge: React.PropTypes.object
+  activeChallenge: React.PropTypes.object,
+  challenges: React.PropTypes.array
 };
 
