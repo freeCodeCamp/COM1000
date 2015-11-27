@@ -37,23 +37,22 @@ class GrandCentralStation extends Component {
   handlePrevNext() {
     this.backView();
     setTimeout(() => {
+      const dispatch = this.props.dispatch;
+      const motion = arguments[0];
+      const challenges = this.props.challenges;
+      const indexOfCurrentChallenge = challenges.findIndex(elem => {
+        return elem.id === this.props.activeChallenge.id;
+      });
+      if (indexOfCurrentChallenge + motion < 0
+          || indexOfCurrentChallenge + motion > challenges.length - 1) {
+        return;
+      }
 
-    const dispatch = this.props.dispatch;
-    const motion = arguments[0];
-    const challenges = this.props.challenges;
-    const indexOfCurrentChallenge = challenges.findIndex(elem => {
-      return elem.id === this.props.activeChallenge.id;
-    });
-    if (indexOfCurrentChallenge + motion < 0
-        || indexOfCurrentChallenge + motion > challenges.length - 1) {
-      return;
-    }
-
-    loadChallenge(dispatch, {
-      'activeChallenge':
-      this.props.challenges[indexOfCurrentChallenge + motion],
-      'view': 'ChallengeEdit'
-    });
+      loadChallenge(dispatch, {
+        'activeChallenge':
+        this.props.challenges[indexOfCurrentChallenge + motion],
+        'view': 'ChallengeEdit'
+      });
     });
   }
 
