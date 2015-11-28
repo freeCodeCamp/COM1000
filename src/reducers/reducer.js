@@ -39,18 +39,12 @@ export default function(prevState = initialState, action) {
         }
         return (challenge);
       });
-
-      let fileStore = prevState.fileStore;
-      let newFileStore = fileStore[prevState.activeFile];
-
-      newFileStore.challenges = challenges;
-
-      fileStore[prevState.activeFile] = newFileStore;
-      let newState = prevState;
-      newState.challenges = challenges;
-      Object.assign({}, newState, newFileStore);
-
-      return (Object.assign({}, prevState, newState));
+    let nextState = Object.assign({}, prevState, {});
+    nextState.challenges = challenges;
+    nextState.fileStore.challenges = challenges;
+    nextState.changes = true;
+    console.log(nextState);
+    return nextState;
 
     case 'createChallenge':
       return (Object.assign({}, prevState, action.payload));
@@ -67,7 +61,15 @@ export default function(prevState = initialState, action) {
     case 'backAction':
       return (Object.assign({}, prevState, action.payload));
 
-    default:
-      return (prevState);
+    case 'loadFileExplorer':
+        return (Object.assign({}, prevState, action.payload));
+
+    case 'fileSaved':
+      let newState = Object.assign({}, prevState, {});
+      newState.changes = false;
+      return newState;
+
+      default:
+        return (prevState);
   }
 }

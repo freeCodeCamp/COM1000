@@ -46,3 +46,16 @@ export function exportChallenge(payload) {
     payload
   };
 }
+
+export function loadFileExplorer(dispatch, payload) {
+  dispatch({
+    type: 'loadFileExplorer',
+    payload
+  });
+}
+
+export function fileSaved(dispatch) {
+  dispatch({
+    type: 'fileSaved'
+  });
+}

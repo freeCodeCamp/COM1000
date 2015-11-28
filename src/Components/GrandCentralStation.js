@@ -5,17 +5,34 @@ import {
   loadFile,
   createChallenge,
   loadChallenge,
-  fileSelect
+  fileSelect,
+  loadFileExplorer,
+  fileSaved
 } from './../actions/editorActions';
 
 import $ from 'jquery';
 
 import Menu from './Menu';
-import TabBar from './Tabs';
 import SelectChallenge from './SelectChallenge';
 import Editor from './Editor';
+import FileExplorer from './FileExplorer';
+import Modal from 'react-modal';
+
+import {RaisedButton} from 'material-ui';
 
 import './../style.css';
+
+const modalStyles = {
+  content : {
+    top: '50%',
+    left: '50%',
+    right: '50%',
+    marginRight: '-50%',
+    width: '400px',
+    height: '300px',
+    transform: 'translate(-50%, -50%)',
+  }
+};
 
 const connector = connect(function(state) {
   return (
@@ -32,6 +49,20 @@ class GrandCentralStation extends Component {
     this.handleFileSelect = this.handleFileSelect.bind(this);
     this.handleFileIsSelected = this.handleFileIsSelected.bind(this);
     this.handleChallengeClick = this.handleChallengeClick.bind(this);
+    this.openModal = this.openModal.bind(this);
+    this.closeModal = this.closeModal.bind(this);
+    this.modalSave = this.modalSave.bind(this);
+    this.forceOpenNav = this.forceOpenNav.bind(this);
+    this.state = {
+      modalIsOpen: false
+    };
+  }
+
+  componentWillMount() {
+    const dispatch = this.props.dispatch;
+    $.getJSON('/files', (files) => {
+      loadFileExplorer(dispatch, {files});
+    });
   }
 
   handlePrevNext() {
@@ -64,12 +95,30 @@ class GrandCentralStation extends Component {
   }
 
   exportFiles() {
+    let data = {};
+    data[this.props.title] = this.props.fileStore;
+    console.log(data);
     $.post('/export', {
-      data: this.props.fileStore,
+      data,
       success: function(data) {
+        fileSaved(this.props.dispatch);
         console.log(data);
-      }
+      }.bind(this)
     });
+  }
+
+  openModal() {
+    console.log('maybe opening modal');
+    this.setState({modalIsOpen: true});
+  }
+
+  closeModal() {
+    this.setState({modalIsOpen: false});
+  }
+
+  modalSave() {
+    this.closeModal();
+    this.exportFiles();
   }
 
   handleFileSelect(to) {
@@ -81,30 +130,33 @@ class GrandCentralStation extends Component {
     });
   }
 
-  handleFileIsSelected(event) {
+  handleFileIsSelected(file, title) {
+    let dispatch = this.props.dispatch;
+    let newFileStoreObject = this.props.fileStore;
+    file = JSON.parse(file);
+    newFileStoreObject = file;
 
-    let files = event.target.files;
-    for (let i in files) {
-      if (files.hasOwnProperty(i)) {
-        let file = files[i];
-        let reader = new FileReader();
-        let dispatch = this.props.dispatch;
+    loadFile(dispatch, {
+      title,
+      fileStore: newFileStoreObject,
+      activeFile: file.name,
+      challenges: newFileStoreObject.challenges,
+      activeChallenge: {}
+    });
+  }
 
-        reader.onload = function(upload) {
-          let newFileStoreObject = this.props.fileStore;
-          newFileStoreObject[file.name] =
-            JSON.parse(upload.target.result);
-
-          loadFile(dispatch, {
-            fileStore: newFileStoreObject,
-            activeFile: file.name,
-            challenges: newFileStoreObject[file.name].challenges,
-            activeChallenge: {}
-          });
-        }.bind(this);
-        reader.readAsText(file);
-      }
+  handleOpenNav() {
+    if (this.props.changes) {
+      console.log('trying to fire modal');
+      this.openModal();
+    } else {
+      this.forceOpenNav();
     }
+  }
+
+  forceOpenNav() {
+    this.closeModal();
+    this.refs.leftNav.refs.fileExplorer.toggle();
   }
 
   handleChallengeClick(id) {
@@ -157,8 +209,8 @@ class GrandCentralStation extends Component {
     } else {
       loadChallenge(dispatch, {
         'activeChallenge':
-        this.props.fileStore[this.props.activeFile]
-          .challenges.filter((challenge) => {
+        this.props.fileStore.challenges
+          .filter((challenge) => {
             return challenge.id === id;
           }).pop(), 'view': 'ChallengeEdit'
       });
@@ -166,31 +218,48 @@ class GrandCentralStation extends Component {
   }
 
   render() {
+    console.log(this.state);
+    let discard = (
+        <RaisedButton label='Discard Changes'
+      primary={true}
+      onClick={this.forceOpenNav} />
+    );
+
+    let save = (
+        <RaisedButton label='Save Changes'
+      secondary={true}
+      onClick={this.modalSave} />
+    );
+
+    // Modal.setAppElement('#modal');
+    let modal = (
+        <Modal
+      isOpen = {this.state.modalIsOpen}
+      onRequestClose={this.closeModal}
+      style = {modalStyles}>
+        <h2>Warning:</h2>
+        <p>You're attempting to load a file but you have changes.</p>
+        {discard} {save}
+      </Modal>
+    );
+
     let elements = [];
     let selectChallenges;
     if (this.props !== null && this.props.view === 'ChallengeSelect') {
       elements = [
         {
           name: 'Choose File',
-          handleChange: this.handleFileIsSelected
-        },
-        {
-          name: 'Export',
-          action: this.exportFiles
+          action: this.handleOpenNav.bind(this)
         }
       ];
     } else {
       elements = [
         {
           name: 'Choose File',
-          handleChange: this.handleFileIsSelected
+          action: this.handleOpenNav.bind(this)
         },
         {
-          name: 'Export',
-          action: this.exportFiles
-        },
-        {
-          name: 'Back',
+          name: 'Choose Challenge',
           action: this.backView
         },
         {
@@ -200,50 +269,63 @@ class GrandCentralStation extends Component {
         {
           name: 'Next',
           action: this.handlePrevNext.bind(this, 1)
+        },
+        {
+          name: 'Save',
+          action: this.exportFiles,
+          id: 'Save'
         }
+
       ];
     }
 
     if (this.props !== null
-        && this.props.fileStore
-        && Object.keys(this.props.fileStore).length) {
+      && this.props.fileStore
+      && Object.keys(this.props.fileStore).length) {
       selectChallenges = (
         <SelectChallenge
           challengeClick = {this.handleChallengeClick}
-          data = {this.props.fileStore[this.props.activeFile]}
+          data = {this.props.fileStore}
         />
       );
     }
 
     let menu =
-          <Menu elements = {elements} />;
-
-    let tabs;
-
-    tabs = Object.keys(this.props.fileStore).length === 0 ? ''
-      : <TabBar action = {this.handleFileSelect}
-           files = {this.props.fileStore} />;
+      <Menu elements = {elements} />;
+    let leftNav = this.props.files ?
+      <FileExplorer dispatch= {this.props.dispatch}
+                    files= {this.props.files}
+                    loadFile= {this.handleFileIsSelected}
+                    ref='leftNav' />
+      : null;
 
     if (Object.keys(this.props.view === 'ChallengeEdit' &&
-                    this.props.activeChallenge).length) {
+        this.props.activeChallenge).length) {
       return (
+        <div>
+          <div id='modal'>{modal}</div>
           <div className = 'app'>
-            <div style = {{ "marginTop": "70px" }}>
-              {tabs}
+            {leftNav}
+            {menu}
+            <div style = {{ 'marginTop': '70px' }}>
               <Editor id={this.props.activeChallenge.id} />
             </div>
-            {menu}
           </div>
+        </div>
       );
     } else {
 
+
       return (
+        <div>
+          <div id='modal'>{modal}</div>
           <div className = 'app'>
-            <div style = {{ "marginTop": "70px" }}>
-              {tabs}
+            {leftNav}
+            <div style = {{ 'marginTop': '70px' }}>
               {selectChallenges}
             </div>
             {menu}
+          </div>
         </div>
       );
     }
@@ -258,6 +340,8 @@ GrandCentralStation.propTypes = {
   activeFile: React.PropTypes.string,
   view: React.PropTypes.string.isRequired,
   activeChallenge: React.PropTypes.object,
-  challenges: React.PropTypes.array
+  challenges: React.PropTypes.array,
+  files: React.PropTypes.array,
+  changes: React.PropTypes.bool
 };
 

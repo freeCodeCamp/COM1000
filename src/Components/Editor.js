@@ -24,16 +24,16 @@ import './../../node_modules/codemirror/addon/lint/javascript-lint';
 const connector = connect(function(state, props) {
   // State from redux
   return (
-    {
-      challenge: state.challenges.reduce(function(prevC, challenge) {
-        if (challenge.id === props.id) {
-          return (challenge);
-        } else {
-          return (prevC);
-        }
-      }, {}),
-      activeFile: state.activeFile
-    }
+  {
+    challenge: state.challenges.reduce(function(prevC, challenge) {
+      if (challenge.id === props.id) {
+        return (challenge);
+      } else {
+        return (prevC);
+      }
+    }, {}),
+    activeFile: state.activeFile
+  }
   );
 });
 
@@ -64,10 +64,10 @@ class Editor extends Component {
         }
       }
       return (
-          <div key = {data[0]}>
+        <div key = {data[0]}>
           <h3>{data[0]}</h3>
           <textarea id = {data[0]} defaultValue = {data[1]}></textarea>
-          </div>
+        </div>
       );
     });
 
@@ -123,15 +123,15 @@ class Editor extends Component {
 
       editor.on('change', function(instance) {
         updateChallenge(dispatch,
-                        {
-                          id: challengeId,
-                          props: {
-                            [codeMirror[0]]: instance.getValue()
-                          },
-                          activeFile: activeFile
+          {
+            id: challengeId,
+            props: {
+              [codeMirror[0]]: instance.getValue()
+            },
+            activeFile: activeFile
 
-                        }
-                       );
+          }
+        );
       });
 
       codeMirrors.push(editor);

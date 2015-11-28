@@ -21,13 +21,31 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.post('/export', function(req, res, next) {
   Object.keys(req.body.data).forEach(function(file) {
+    console.log(file);
     var fileData = req.body.data[file];
+    console.log('writing file data');
     console.log(JSON.stringify(fileData, null, 2));
     fs.writeFile(config.fccPath + file,
                  JSON.stringify(fileData, null, 2),
                  function(err) {
       console.error(err);
     });
+  });
+});
+
+app.get('/files', (req, res, next) => {
+  fs.readdir(config.fccPath, (err, files) => {
+    if (err) {
+      return next(err);
+    }
+    return res.json(files);
+  });
+});
+
+app.get('/files/:fileName', (req, res, next) => {
+  fs.readFile(config.fccPath + '/' + req.params.fileName, 'utf8', (err, data) => {
+    if (err) {return next(err);}
+    return res.json(data);
   });
 });
 
