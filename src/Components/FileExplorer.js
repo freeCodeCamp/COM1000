@@ -33,10 +33,10 @@ export default class FileExplorer extends Component {
     return (
       <LeftNav
         docked={false}
-        menuItems = {menuItems}
+      menuItems = {menuItems}
         ref='fileExplorer'
-        style = {leftNavStyle}
-        onChange = {this.handleSelectedFile.bind(this)}
+      style = {leftNavStyle}
+      onChange = {this.handleSelectedFile.bind(this)}
       >
       </LeftNav>
     );

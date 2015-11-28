@@ -18,7 +18,8 @@ import Editor from './Editor';
 import FileExplorer from './FileExplorer';
 import Modal from 'react-modal';
 
-import {RaisedButton} from 'material-ui';
+import injectTapEventPlugin from 'react-tap-event-plugin';
+import {RaisedButton, Snackbar} from 'material-ui';
 
 import './../style.css';
 
@@ -53,9 +54,11 @@ class GrandCentralStation extends Component {
     this.closeModal = this.closeModal.bind(this);
     this.modalSave = this.modalSave.bind(this);
     this.forceOpenNav = this.forceOpenNav.bind(this);
+    this.handleSnackbar = this.handleSnackbar.bind(this);
     this.state = {
       modalIsOpen: false
     };
+    injectTapEventPlugin();
   }
 
   componentWillMount() {
@@ -63,6 +66,10 @@ class GrandCentralStation extends Component {
     $.getJSON('/files', (files) => {
       loadFileExplorer(dispatch, {files});
     });
+  }
+
+  handleSnackbar() {
+    console.log('Snackbar dismissed');
   }
 
   handlePrevNext() {
@@ -95,6 +102,7 @@ class GrandCentralStation extends Component {
   }
 
   exportFiles() {
+    this.refs.snackbar.show();
     let data = {};
     data[this.props.title] = this.props.fileStore;
     console.log(data);
@@ -243,6 +251,15 @@ class GrandCentralStation extends Component {
       </Modal>
     );
 
+    let snackBar = (
+      <Snackbar action='OK'
+                autoHideDuration={3000}
+                message='File saved successfully'
+                onActionTouchTap={this.handleSnackbar}
+                ref='snackbar'
+      />
+    );
+
     let elements = [];
     let selectChallenges;
     if (this.props !== null && this.props.view === 'ChallengeSelect') {
@@ -311,6 +328,7 @@ class GrandCentralStation extends Component {
               <Editor id={this.props.activeChallenge.id} />
             </div>
           </div>
+          {snackBar}
         </div>
       );
     } else {
