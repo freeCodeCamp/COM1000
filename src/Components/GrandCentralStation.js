@@ -118,7 +118,7 @@ class GrandCentralStation extends Component {
 
   modalSave() {
     this.closeModal();
-    document.getElementById('save').click();
+    this.exportFiles();
   }
 
   handleFileSelect(to) {
