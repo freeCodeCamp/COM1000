@@ -156,9 +156,7 @@ class GrandCentralStation extends Component {
 
   forceOpenNav() {
     this.closeModal();
-    setTimeout(() => {
-      this.refs.leftNav.refs.fileExplorer.toggle();
-    });
+    this.refs.leftNav.refs.fileExplorer.toggle();
   }
 
   handleChallengeClick(id) {
@@ -233,7 +231,7 @@ class GrandCentralStation extends Component {
       onClick={this.modalSave} />
     );
 
-    Modal.setAppElement('#modal');
+    // Modal.setAppElement('#modal');
     let modal = (
         <Modal
       isOpen = {this.state.modalIsOpen}
@@ -241,8 +239,8 @@ class GrandCentralStation extends Component {
       style = {modalStyles}>
         <h2>Warning:</h2>
         <p>You're attempting to load a file but you have changes.</p>
-{discard} {save}
-</Modal>
+        {discard} {save}
+      </Modal>
     );
 
     let elements = [];
@@ -282,8 +280,8 @@ class GrandCentralStation extends Component {
     }
 
     if (this.props !== null
-        && this.props.fileStore
-        && Object.keys(this.props.fileStore).length) {
+      && this.props.fileStore
+      && Object.keys(this.props.fileStore).length) {
       selectChallenges = (
         <SelectChallenge
           challengeClick = {this.handleChallengeClick}
@@ -293,39 +291,43 @@ class GrandCentralStation extends Component {
     }
 
     let menu =
-          <Menu elements = {elements} />;
+      <Menu elements = {elements} />;
     let leftNav = this.props.files ?
-          <FileExplorer dispatch= {this.props.dispatch}
-                        files= {this.props.files}
-                        loadFile= {this.handleFileIsSelected}
-                        ref='leftNav' />
+      <FileExplorer dispatch= {this.props.dispatch}
+                    files= {this.props.files}
+                    loadFile= {this.handleFileIsSelected}
+                    ref='leftNav' />
       : null;
 
     if (Object.keys(this.props.view === 'ChallengeEdit' &&
-                    this.props.activeChallenge).length) {
+        this.props.activeChallenge).length) {
       return (
-          <div className = 'app'>
-          {leftNav}
+        <div>
           <div id='modal'>{modal}</div>
-{menu}
-            <div style = {{ "marginTop": "70px" }}>
+          <div className = 'app'>
+            {leftNav}
+            {menu}
+            <div style = {{ 'marginTop': '70px' }}>
               <Editor id={this.props.activeChallenge.id} />
             </div>
           </div>
+        </div>
       );
     } else {
 
-     
+
       return (
+        <div>
+          <div id='modal'>{modal}</div>
           <div className = 'app'>
-          {leftNav}
-<div id='modal'>{modal}</div>
+            {leftNav}
             <div style = {{ 'marginTop': '70px' }}>
               {selectChallenges}
             </div>
             {menu}
-</div>
-           );
+          </div>
+        </div>
+      );
     }
   }
 }
