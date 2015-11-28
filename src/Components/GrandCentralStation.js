@@ -102,7 +102,6 @@ class GrandCentralStation extends Component {
   }
 
   exportFiles() {
-    this.refs.snackbar.show();
     let data = {};
     data[this.props.title] = this.props.fileStore;
     console.log(data);
@@ -110,6 +109,7 @@ class GrandCentralStation extends Component {
       data,
       success: function(data) {
         fileSaved(this.props.dispatch);
+        this.refs.snackbar.show();
         console.log(data);
       }.bind(this)
     });
