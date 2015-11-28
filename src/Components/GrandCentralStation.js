@@ -23,14 +23,14 @@ import {RaisedButton} from 'material-ui';
 import './../style.css';
 
 const modalStyles = {
-  content : {
+  content: {
     top: '50%',
     left: '50%',
     right: '50%',
     marginRight: '-50%',
     width: '400px',
     height: '300px',
-    transform: 'translate(-50%, -50%)',
+    transform: 'translate(-50%, -50%)'
   }
 };
 
@@ -221,25 +221,25 @@ class GrandCentralStation extends Component {
     console.log(this.state);
     let discard = (
         <RaisedButton label='Discard Changes'
-      primary={true}
-      onClick={this.forceOpenNav} />
+                      onClick={this.forceOpenNav}
+                      primary={true} />
     );
 
     let save = (
         <RaisedButton label='Save Changes'
-      secondary={true}
-      onClick={this.modalSave} />
+                      onClick={this.modalSave}
+                      secondary={true} />
     );
 
     // Modal.setAppElement('#modal');
     let modal = (
-        <Modal
-      isOpen = {this.state.modalIsOpen}
-      onRequestClose={this.closeModal}
-      style = {modalStyles}>
-        <h2>Warning:</h2>
-        <p>You're attempting to load a file but you have changes.</p>
-        {discard} {save}
+      <Modal
+        isOpen = {this.state.modalIsOpen}
+        onRequestClose={this.closeModal}
+        style = {modalStyles}>
+            <h2>Warning:</h2>
+            <p>You're attempting to load a file but you have changes.</p>
+            {discard} {save}
       </Modal>
     );
 
@@ -342,6 +342,7 @@ GrandCentralStation.propTypes = {
   activeChallenge: React.PropTypes.object,
   challenges: React.PropTypes.array,
   files: React.PropTypes.array,
-  changes: React.PropTypes.bool
+  changes: React.PropTypes.bool,
+  title: React.PropTypes.string
 };
 
