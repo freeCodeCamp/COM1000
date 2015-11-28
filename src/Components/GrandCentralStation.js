@@ -27,9 +27,10 @@ const modalStyles = {
     top: '50%',
     left: '50%',
     right: '50%',
-    bottom: '50%',
     marginRight: '-50%',
-    transform: 'translate(-50%, -50%)'
+    width: '400px',
+    height: '300px',
+    transform: 'translate(-50%, -50%)',
   }
 };
 
@@ -51,6 +52,7 @@ class GrandCentralStation extends Component {
     this.openModal = this.openModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
     this.modalSave = this.modalSave.bind(this);
+    this.forceOpenNav = this.forceOpenNav.bind(this);
     this.state = {
       modalIsOpen: false
     };
@@ -106,6 +108,7 @@ class GrandCentralStation extends Component {
   }
 
   openModal() {
+    console.log('maybe opening modal');
     this.setState({modalIsOpen: true});
   }
 
@@ -152,7 +155,10 @@ class GrandCentralStation extends Component {
   }
 
   forceOpenNav() {
-    this.refs.leftNav.refs.fileExplorer.toggle();
+    this.closeModal();
+    setTimeout(() => {
+      this.refs.leftNav.refs.fileExplorer.toggle();
+    });
   }
 
   handleChallengeClick(id) {
@@ -214,6 +220,31 @@ class GrandCentralStation extends Component {
   }
 
   render() {
+    console.log(this.state);
+    let discard = (
+        <RaisedButton label='Discard Changes'
+      primary={true}
+      onClick={this.forceOpenNav} />
+    );
+
+    let save = (
+        <RaisedButton label='Save Changes'
+      secondary={true}
+      onClick={this.modalSave} />
+    );
+
+    Modal.setAppElement('#modal');
+    let modal = (
+        <Modal
+      isOpen = {this.state.modalIsOpen}
+      onRequestClose={this.closeModal}
+      style = {modalStyles}>
+        <h2>Warning:</h2>
+        <p>You're attempting to load a file but you have changes.</p>
+{discard} {save}
+</Modal>
+    );
+
     let elements = [];
     let selectChallenges;
     if (this.props !== null && this.props.view === 'ChallengeSelect') {
@@ -275,43 +306,26 @@ class GrandCentralStation extends Component {
       return (
           <div className = 'app'>
           {leftNav}
+          <div id='modal'>{modal}</div>
+{menu}
             <div style = {{ "marginTop": "70px" }}>
               <Editor id={this.props.activeChallenge.id} />
             </div>
-            {menu}
           </div>
       );
     } else {
 
-      let discard = (
-          <RaisedButton label='Discard Changes'
-        onClick={this.forceOpenNav} />
-      );
-
-      let save = (
-        <RaisedButton label='Save Changes'
-        onClick={this.modalSave} />
-      );
-
-      Modal.setAppElement('#modal');
-
+     
       return (
           <div className = 'app'>
           {leftNav}
+<div id='modal'>{modal}</div>
             <div style = {{ 'marginTop': '70px' }}>
               {selectChallenges}
             </div>
             {menu}
-          <Modal
-        isOpen = {this.state.modalIsOpen}
-        onRequestClose={this.closeModal}
-        style = {modalStyles}>
-          <h2>Warning:</h2>
-          <p>You're attempting to load a file but you have changes.</p>
-{discard} {save}
-</Modal>
-        </div>
-      );
+</div>
+           );
     }
   }
 }
