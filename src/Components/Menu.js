@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
-
-import RaisedButton from 'material-ui/lib/raised-button';
+import
+{ Toolbar,
+  ToolbarGroup,
+  FlatButton,
+  ToolbarTitle
+} from 'material-ui';
 
 const styles = {
   fileInput: {
@@ -15,7 +19,10 @@ const styles = {
     opacity: '0'
   },
   buttonStyle: {
-    paddingRight: '5px'
+    fontSize: '12px',
+    display: 'inline',
+    marginLeft: '-25px',
+    margineRight: '-25px'
   },
   menuStyle: {
     width: '100%',
@@ -24,6 +31,9 @@ const styles = {
     left: '0px',
     background: 'white',
     zIndex: '1000'
+  },
+  titleStyle: {
+    fontSize: '12px'
   }
 };
 
@@ -40,37 +50,29 @@ class Menu extends Component {
   }
 
   render() {
-    let MenuElements = this.props.elements.map((elem, ix) => {
-      let potentialInput;
-      if (elem.name === 'Choose File') {
-        potentialInput = (
-          <p></p>
-          // <input
-          //   style = {styles.fileInput}
-          //   type = 'file' multiple>
-          // </input>
-        );
-      }
+    let MenuElements = this.props.elements.map((elem) => {
+      let id = elem.id ? elem.id : null;
       return (
-        <span key = { ix }
-              style = {styles.buttonStyle}>
-        <RaisedButton key = {elem.name}
-                      label = { elem.name }
-                      onChange = {elem.handleChange}
-                      onClick = {elem.action}
-        >
-          {potentialInput}
-        </RaisedButton>
-        </span>
+        <FlatButton key = {elem.name}
+                    label = { elem.name }
+                    onClick = {elem.action}
+                    style = {styles.buttonStyle}
+                    id={id}
+        />
       );
     });
 
     return (
-      <div style= {styles.menuStyle}>
-        <ul>
-          {MenuElements}
-        </ul>
-      </div>
+        <Toolbar style={styles.menuStyle}>
+        <ToolbarGroup key={0} float='left'>
+        {MenuElements}
+        </ToolbarGroup>
+        <ToolbarGroup key={1} float='right'>
+        <ToolbarTitle text= {this.props.activeFile}
+                      style={styles.titleStyle}
+        />
+        </ToolbarGroup>
+        </Toolbar>
     );
   }
 }
@@ -78,6 +80,7 @@ class Menu extends Component {
 export default connector(Menu);
 
 Menu.propTypes = {
-  elements: React.PropTypes.array.isRequired
+  elements: React.PropTypes.array.isRequired,
+  activeFile: React.PropTypes.string
 };
 

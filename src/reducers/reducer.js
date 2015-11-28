@@ -2,8 +2,7 @@ const initialState = {
   'fileStore': {},
   'activeFile': '',
   'activeChallenge': {},
-  'view': 'ChallengeSelect',
-  'files': []
+  'view': 'ChallengeSelect'
 };
 
 function parser(key) {
@@ -40,18 +39,12 @@ export default function(prevState = initialState, action) {
         }
         return (challenge);
       });
-
-      let fileStore = prevState.fileStore;
-      let newFileStore = fileStore[prevState.activeFile];
-
-      newFileStore.challenges = challenges;
-
-      fileStore[prevState.activeFile] = newFileStore;
-      let newState = prevState;
-      newState.challenges = challenges;
-      Object.assign({}, newState, newFileStore);
-
-      return (Object.assign({}, prevState, newState));
+    let nextState = Object.assign({}, prevState, {});
+    nextState.challenges = challenges;
+    nextState.fileStore.challenges = challenges;
+    nextState.changes = true;
+    console.log(nextState);
+    return nextState;
 
     case 'createChallenge':
       return (Object.assign({}, prevState, action.payload));
@@ -70,6 +63,9 @@ export default function(prevState = initialState, action) {
 
   case 'loadFileExplorer':
       return (Object.assign({}, prevState, action.payload));
+    
+  case 'fileSaved':
+    return (Object.assign({}, prevState, prevState.changes = false));
 
     default:
       return (prevState);

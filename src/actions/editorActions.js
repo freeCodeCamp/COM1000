@@ -53,3 +53,9 @@ export function loadFileExplorer(dispatch, payload) {
     payload
   });
 }
+
+export function fileSaved(dispatch) {
+  dispatch({
+    type: 'fileSaved'
+  });
+}
