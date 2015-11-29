@@ -47,8 +47,10 @@ class Editor extends Component {
     var unrenderedCodeMirrors = [];
 
     for (let i in this.props.challenge ) {
-      var challengeDataField = this.props.challenge[i];
-      codeMirrorData.push([i, challengeDataField]);
+      if (i) {
+        var challengeDataField = this.props.challenge[i];
+        codeMirrorData.push([i, challengeDataField]);
+      }
     }
 
     codeMirrorData = codeMirrorData.filter(function(field) {
@@ -66,7 +68,7 @@ class Editor extends Component {
       return (
         <div key = {data[0]}>
           <h3>{data[0]}</h3>
-          <textarea id = {data[0]} defaultValue = {data[1]}></textarea>
+          <textarea defaultValue = {data[1]} id = {data[0]} ></textarea>
         </div>
       );
     });
