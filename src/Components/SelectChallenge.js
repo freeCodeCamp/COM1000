@@ -18,8 +18,8 @@ export default class SelectChallenge extends Component {
         <ListItem
           data-challengid = {challenge.id}
           key = {challenge.id}
-          primaryText = {challenge.title}
           onClick = {this.handleClick.bind(this, challenge.id)}
+          primaryText = {challenge.title}
         />
       );
     });
@@ -30,8 +30,8 @@ export default class SelectChallenge extends Component {
         <ListItem
           data-challengid = 'new'
           key = 'new'
-          primaryText = 'Create new'
           onClick = {this.handleClick.bind(this, 'new')}
+          primaryText = 'Create new'
         />
       </List>
     );

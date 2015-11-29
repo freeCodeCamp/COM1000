@@ -53,11 +53,11 @@ class Menu extends Component {
     let MenuElements = this.props.elements.map((elem) => {
       let id = elem.id ? elem.id : null;
       return (
-        <FlatButton key = {elem.name}
+        <FlatButton id={id}
+                    key = {elem.name}
                     label = { elem.name }
                     onClick = {elem.action}
                     style = {styles.buttonStyle}
-                    id={id}
         />
       );
     });
