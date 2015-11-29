@@ -245,15 +245,16 @@ class GrandCentralStation extends Component {
         isOpen = {this.state.modalIsOpen}
         onRequestClose={this.closeModal}
         style = {modalStyles}
-        >
+      >
           <h2>Warning:</h2>
-          <p>You're attempting to load a file but you have changes.</p>
+          <p>You are attempting to load a file but you have unsaved changes.</p>
           {discard} {save}
       </Modal>
     );
 
     let snackBar = (
-      <Snackbar action='OK'
+      <Snackbar
+        action='OK'
         autoHideDuration={3000}
         message='File saved successfully'
         onActionTouchTap={this.handleSnackbar}
@@ -311,7 +312,8 @@ class GrandCentralStation extends Component {
     let menu =
     <Menu elements = {elements} />;
     let leftNav = this.props.files ?
-                  <FileExplorer dispatch= {this.props.dispatch}
+                  <FileExplorer
+                    dispatch= {this.props.dispatch}
                     files= {this.props.files}
                     loadFile= {this.handleFileIsSelected}
                     ref='leftNav'
