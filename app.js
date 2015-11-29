@@ -17,7 +17,8 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(bodyParser.urlencoded({parameterLimit: 10000000,
   limit: '50mb',
-  extended: true}));
+  extended: true}
+));
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -33,75 +34,76 @@ app.post('/export', function(req, res, next) {
       JSON.stringify(fileData, null, 2),
       function(err) {
         console.error(err);
-      });
-    });
-  });
-
-  app.get('/files', (req, res, next) => {
-    fs.readdir(config.fccPath, (err, files) => {
-      if (err) {
-        return next(err);
       }
-      return res.json(files);
-    });
+    );
   });
+});
 
-  app.get('/files/:fileName', (req, res, next) => {
-    fs.readFile(config.fccPath + '/' + req.params.fileName,
-      'utf8',
-      (err, data) => {
-        if (err) {return next(err);}
-        return res.json(data);
-    });
+app.get('/files', (req, res, next) => {
+  fs.readdir(config.fccPath, (err, files) => {
+    if (err) {
+      return next(err);
+    }
+    return res.json(files);
   });
+});
 
-  /*eslint-disable*/
-  app.get('/mongoid', function(req, res, next) {
-    /*eslint-enable*/
-    var objectId = new ObjectID();
-    res.json({objectId: objectId});
+app.get('/files/:fileName', (req, res, next) => {
+  fs.readFile(config.fccPath + '/' + req.params.fileName,
+  'utf8',
+  (err, data) => {
+    if (err) {return next(err);}
+    return res.json(data);
   });
+});
 
-  /*eslint-disable*/
-  app.get('/*', function(req, res, next) {
-    /*eslint-enable*/
-    res.render('index', {title: 'COM1000'});
-  });
+/*eslint-disable*/
+app.get('/mongoid', function(req, res, next) {
+  /*eslint-enable*/
+  var objectId = new ObjectID();
+  res.json({objectId: objectId});
+});
 
-  // catch 404 and forward to error handler
-  app.use(function(req, res, next) {
-    var err = new Error('Not Found');
-    err.status = 404;
-    next(err);
-  });
+/*eslint-disable*/
+app.get('/*', function(req, res, next) {
+  /*eslint-enable*/
+  res.render('index', {title: 'COM1000'});
+});
 
-  // error handlers
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  var err = new Error('Not Found');
+  err.status = 404;
+  next(err);
+});
 
-  // development error handler
-  // will print stacktrace
-  if (app.get('env') === 'development') {
-    /*eslint-disable*/
-    app.use(function(err, req, res, next) {
-      /*eslint-enable*/
-      res.status(err.status || 500);
-      res.render('error', {
-        message: err.message,
-        error: err
-      });
-    });
-  }
+// error handlers
 
-  // production error handler
-  // no stacktraces leaked to user
+// development error handler
+// will print stacktrace
+if (app.get('env') === 'development') {
   /*eslint-disable*/
   app.use(function(err, req, res, next) {
     /*eslint-enable*/
     res.status(err.status || 500);
     res.render('error', {
       message: err.message,
-      error: {}
+      error: err
     });
   });
+}
+
+// production error handler
+// no stacktraces leaked to user
+/*eslint-disable*/
+app.use(function(err, req, res, next) {
+  /*eslint-enable*/
+  res.status(err.status || 500);
+  res.render('error', {
+    message: err.message,
+    error: {}
+  });
+});
 
 
-  module.exports = app;
+module.exports = app;
