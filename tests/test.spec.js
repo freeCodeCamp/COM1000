@@ -7,7 +7,7 @@ test('tape.spec', (t) => {
     const actual = typeof Array.prototype.map;
     const expected = 'object';
 
-    t.equals(actual, expected, 'Array.prototype.map is an object');
+    t.equals(actual, expected, 'typeof Array.prototype.map is "object"');
     // t.end explicitly tells the test to end if you don't want to use plan
     t.end();
   });
@@ -16,7 +16,7 @@ test('tape.spec', (t) => {
     const actual = typeof Array.prototype.map;
     const expected = 'function';
 
-    t.equals(actual, expected, 'Array.prototype.map is a function');
+    t.equals(actual, expected, 'typeof Array.prototype.map is "function"');
     t.end();
   });
 
