@@ -20,7 +20,7 @@ export default class SelectChallenge extends Component {
           key = {challenge.id}
           onClick = {this.handleClick.bind(this, challenge.id)}
           primaryText = {challenge.title}
-        />
+          />
       );
     });
 
@@ -32,7 +32,7 @@ export default class SelectChallenge extends Component {
           key = 'new'
           onClick = {this.handleClick.bind(this, 'new')}
           primaryText = 'Create new'
-        />
+          />
       </List>
     );
   }

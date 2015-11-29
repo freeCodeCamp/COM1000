@@ -24,16 +24,16 @@ import './../../node_modules/codemirror/addon/lint/javascript-lint';
 const connector = connect(function(state, props) {
   // State from redux
   return (
-  {
-    challenge: state.challenges.reduce(function(prevC, challenge) {
-      if (challenge.id === props.id) {
-        return (challenge);
-      } else {
-        return (prevC);
-      }
-    }, {}),
-    activeFile: state.activeFile
-  }
+    {
+      challenge: state.challenges.reduce(function(prevC, challenge) {
+        if (challenge.id === props.id) {
+          return (challenge);
+        } else {
+          return (prevC);
+        }
+      }, {}),
+      activeFile: state.activeFile
+    }
   );
 });
 
@@ -93,18 +93,18 @@ class Editor extends Component {
       switch (codeMirror[0]) {
         case 'challengeSeed':
         case 'solutions':
-          if (challengeType !== 5 && challengeType !== 1) {
-            mode = 'htmlmixed';
-            break;
-          }
+        if (challengeType !== 5 && challengeType !== 1) {
+          mode = 'htmlmixed';
+          break;
+        }
         case 'head':
         case 'tail':
         case 'tests':
-          mode = 'javascript';
-          break;
+        mode = 'javascript';
+        break;
         default:
-          mode = 'htmlmixed';
-          break;
+        mode = 'htmlmixed';
+        break;
       }
       /* eslint-enable no-fallthrough */
 
