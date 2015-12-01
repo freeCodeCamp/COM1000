@@ -93,18 +93,18 @@ class Editor extends Component {
       switch (codeMirror[0]) {
         case 'challengeSeed':
         case 'solutions':
-        if (challengeType !== 5 && challengeType !== 1) {
-          mode = 'htmlmixed';
+          if (challengeType !== 5 && challengeType !== 1) {
+            mode = 'htmlmixed';
+          }
           break;
-        }
         case 'head':
         case 'tail':
         case 'tests':
-        mode = 'javascript';
-        break;
+          mode = 'javascript';
+          break;
         default:
-        mode = 'htmlmixed';
-        break;
+          mode = 'htmlmixed';
+          break;
       }
       /* eslint-enable no-fallthrough */
 
