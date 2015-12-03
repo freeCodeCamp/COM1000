@@ -53,26 +53,28 @@ class Menu extends Component {
     let MenuElements = this.props.elements.map((elem) => {
       let id = elem.id ? elem.id : null;
       return (
-        <FlatButton id={id}
-                    key = {elem.name}
-                    label = { elem.name }
-                    onClick = {elem.action}
-                    style = {styles.buttonStyle}
-        />
+        <FlatButton
+          id={id}
+          key = {elem.name}
+          label = { elem.name }
+          onClick = {elem.action}
+          style = {styles.buttonStyle}
+          />
       );
     });
 
     return (
-        <Toolbar style={styles.menuStyle}>
-        <ToolbarGroup key={0} float='left'>
-        {MenuElements}
+      <Toolbar style={styles.menuStyle}>
+        <ToolbarGroup float='left' key={0}>
+          {MenuElements}
         </ToolbarGroup>
-        <ToolbarGroup key={1} float='right'>
-        <ToolbarTitle text= {this.props.activeFile}
-                      style={styles.titleStyle}
-        />
+        <ToolbarGroup float='right' key={1}>
+          <ToolbarTitle
+            style={styles.titleStyle}
+            text= {this.props.activeFile}
+            />
         </ToolbarGroup>
-        </Toolbar>
+      </Toolbar>
     );
   }
 }
@@ -83,4 +85,3 @@ Menu.propTypes = {
   elements: React.PropTypes.array.isRequired,
   activeFile: React.PropTypes.string
 };
-

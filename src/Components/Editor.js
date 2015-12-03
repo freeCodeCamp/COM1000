@@ -24,16 +24,16 @@ import './../../node_modules/codemirror/addon/lint/javascript-lint';
 const connector = connect(function(state, props) {
   // State from redux
   return (
-  {
-    challenge: state.challenges.reduce(function(prevC, challenge) {
-      if (challenge.id === props.id) {
-        return (challenge);
-      } else {
-        return (prevC);
-      }
-    }, {}),
-    activeFile: state.activeFile
-  }
+    {
+      challenge: state.challenges.reduce(function(prevC, challenge) {
+        if (challenge.id === props.id) {
+          return (challenge);
+        } else {
+          return (prevC);
+        }
+      }, {}),
+      activeFile: state.activeFile
+    }
   );
 });
 
@@ -95,8 +95,8 @@ class Editor extends Component {
         case 'solutions':
           if (challengeType !== 5 && challengeType !== 1) {
             mode = 'htmlmixed';
-            break;
           }
+          break;
         case 'head':
         case 'tail':
         case 'tests':

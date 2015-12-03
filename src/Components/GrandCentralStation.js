@@ -82,287 +82,288 @@ class GrandCentralStation extends Component {
         return elem.id === this.props.activeChallenge.id;
       });
       if (indexOfCurrentChallenge + motion < 0
-       || indexOfCurrentChallenge + motion > challenges.length - 1) {
-         return;
+        || indexOfCurrentChallenge + motion > challenges.length - 1) {
+          return;
+        }
+
+        loadChallenge(dispatch, {
+          'activeChallenge':
+          this.props.challenges[indexOfCurrentChallenge + motion],
+          'view': 'ChallengeEdit'
+        });
+      });
+    }
+
+    backView() {
+      let dispatch = this.props.dispatch;
+      backAction(dispatch, {
+        view: 'challengeSelect'
+      });
+    }
+
+    exportFiles() {
+      let data = {};
+      data[this.props.title] = this.props.fileStore;
+      console.log(data);
+      $.post('/export', {
+        data,
+        success: function(data) {
+          fileSaved(this.props.dispatch);
+          this.refs.snackbar.show();
+          console.log(data);
+        }.bind(this)
+      });
+    }
+
+    openModal() {
+      console.log('maybe opening modal');
+      this.setState({modalIsOpen: true});
+    }
+
+    closeModal() {
+      this.setState({modalIsOpen: false});
+    }
+
+    modalSave() {
+      this.closeModal();
+      this.exportFiles();
+    }
+
+    handleFileSelect(to) {
+      let dispatch = this.props.dispatch;
+      let fileStore = this.props.fileStore;
+      fileSelect(dispatch, {
+        activeFile: to,
+        challenges: fileStore[to].challenges
+      });
+    }
+
+    handleFileIsSelected(file, title) {
+      let dispatch = this.props.dispatch;
+      let newFileStoreObject = this.props.fileStore;
+      file = JSON.parse(file);
+      newFileStoreObject = file;
+
+      loadFile(dispatch, {
+        title,
+        fileStore: newFileStoreObject,
+        activeFile: file.name,
+        challenges: newFileStoreObject.challenges,
+        activeChallenge: {}
+      });
+    }
+
+    handleOpenNav() {
+      if (this.props.changes) {
+        console.log('trying to fire modal');
+        this.openModal();
+      } else {
+        this.forceOpenNav();
+      }
+    }
+
+    forceOpenNav() {
+      this.closeModal();
+      this.refs.leftNav.refs.fileExplorer.toggle();
+    }
+
+    handleChallengeClick(id) {
+      let dispatch = this.props.dispatch;
+
+      let oldFileStore = this.props.fileStore;
+      let currentFile = this.props.activeFile;
+
+      if (id === 'new') {
+        $.getJSON('/mongoid', function(mongoid) {
+          mongoid = mongoid.objectId;
+          oldFileStore[currentFile].challenges.push({
+            'id': mongoid,
+            'title': mongoid,
+            'description': [
+              ''
+            ],
+            'tests': [
+              ''
+            ],
+            'challengeSeed': [
+              ''
+            ],
+            'MDNlinks': [
+              ''
+            ],
+            'solutions': [
+              ''
+            ],
+            'type': '',
+            'challengeType': 0,
+            'nameCn': '',
+            'descriptionCn': [],
+            'nameFr': '',
+            'descriptionFr': [],
+            'nameRu': '',
+            'descriptionRu': [],
+            'nameEs': '',
+            'descriptionEs': [],
+            'namePt': '',
+            'descriptionPt': []
+          });
+
+          let AddedChallenge = {fileStore: oldFileStore};
+
+          createChallenge(dispatch,
+            AddedChallenge
+          );
+        });
+      } else {
+        loadChallenge(dispatch, {
+          'activeChallenge':
+          this.props.fileStore.challenges
+          .filter((challenge) => {
+            return challenge.id === id;
+          }).pop(), 'view': 'ChallengeEdit'
+        });
+      }
+    }
+
+    render() {
+      console.log(this.state);
+      let discard = (
+        <RaisedButton label='Discard Changes'
+          onClick={this.forceOpenNav}
+          primary={true} />
+      );
+
+      let save = (
+        <RaisedButton label='Save Changes'
+          onClick={this.modalSave}
+          secondary={true} />
+      );
+
+      // Modal.setAppElement('#modal');
+      let modal = (
+        <Modal
+          isOpen = {this.state.modalIsOpen}
+          onRequestClose={this.closeModal}
+          style = {modalStyles}
+          >
+          <h2>Warning:</h2>
+          <p>You are attempting to load a file but you have unsaved changes.</p>
+          {discard} {save}
+        </Modal>
+      );
+
+      let snackBar = (
+        <Snackbar
+          action='OK'
+          autoHideDuration={3000}
+          message='File saved successfully'
+          onActionTouchTap={this.handleSnackbar}
+          ref='snackbar'
+          />
+      );
+
+      let elements = [];
+      let selectChallenges;
+      if (this.props !== null && this.props.view === 'ChallengeSelect') {
+        elements = [
+          {
+            name: 'Choose File',
+            action: this.handleOpenNav.bind(this)
+          }
+        ];
+      } else {
+        elements = [
+          {
+            name: 'Choose File',
+            action: this.handleOpenNav.bind(this)
+          },
+          {
+            name: 'Choose Challenge',
+            action: this.backView
+          },
+          {
+            name: 'Prev',
+            action: this.handlePrevNext.bind(this, -1)
+          },
+          {
+            name: 'Next',
+            action: this.handlePrevNext.bind(this, 1)
+          },
+          {
+            name: 'Save',
+            action: this.exportFiles,
+            id: 'Save'
+          }
+
+        ];
       }
 
-      loadChallenge(dispatch, {
-        'activeChallenge':
-        this.props.challenges[indexOfCurrentChallenge + motion],
-        'view': 'ChallengeEdit'
-      });
-    });
-  }
-
-  backView() {
-    let dispatch = this.props.dispatch;
-    backAction(dispatch, {
-      view: 'challengeSelect'
-    });
-  }
-
-  exportFiles() {
-    let data = {};
-    data[this.props.title] = this.props.fileStore;
-    console.log(data);
-    $.post('/export', {
-      data,
-      success: function(data) {
-        fileSaved(this.props.dispatch);
-        this.refs.snackbar.show();
-        console.log(data);
-      }.bind(this)
-    });
-  }
-
-  openModal() {
-    console.log('maybe opening modal');
-    this.setState({modalIsOpen: true});
-  }
-
-  closeModal() {
-    this.setState({modalIsOpen: false});
-  }
-
-  modalSave() {
-    this.closeModal();
-    this.exportFiles();
-  }
-
-  handleFileSelect(to) {
-    let dispatch = this.props.dispatch;
-    let fileStore = this.props.fileStore;
-    fileSelect(dispatch, {
-      activeFile: to,
-      challenges: fileStore[to].challenges
-    });
-  }
-
-  handleFileIsSelected(file, title) {
-    let dispatch = this.props.dispatch;
-    let newFileStoreObject = this.props.fileStore;
-    file = JSON.parse(file);
-    newFileStoreObject = file;
-
-    loadFile(dispatch, {
-      title,
-      fileStore: newFileStoreObject,
-      activeFile: file.name,
-      challenges: newFileStoreObject.challenges,
-      activeChallenge: {}
-    });
-  }
-
-  handleOpenNav() {
-    if (this.props.changes) {
-      console.log('trying to fire modal');
-      this.openModal();
-    } else {
-      this.forceOpenNav();
-    }
-  }
-
-  forceOpenNav() {
-    this.closeModal();
-    this.refs.leftNav.refs.fileExplorer.toggle();
-  }
-
-  handleChallengeClick(id) {
-    let dispatch = this.props.dispatch;
-
-    let oldFileStore = this.props.fileStore;
-    let currentFile = this.props.activeFile;
-
-    if (id === 'new') {
-      $.getJSON('/mongoid', function(mongoid) {
-        mongoid = mongoid.objectId;
-        oldFileStore[currentFile].challenges.push({
-          'id': mongoid,
-          'title': mongoid,
-          'description': [
-            ''
-          ],
-          'tests': [
-            ''
-          ],
-          'challengeSeed': [
-            ''
-          ],
-          'MDNlinks': [
-            ''
-          ],
-          'solutions': [
-            ''
-          ],
-          'type': '',
-          'challengeType': 0,
-          'nameCn': '',
-          'descriptionCn': [],
-          'nameFr': '',
-          'descriptionFr': [],
-          'nameRu': '',
-          'descriptionRu': [],
-          'nameEs': '',
-          'descriptionEs': [],
-          'namePt': '',
-          'descriptionPt': []
-        });
-
-        let AddedChallenge = {fileStore: oldFileStore};
-
-        createChallenge(dispatch,
-                        AddedChallenge
-        );
-      });
-    } else {
-      loadChallenge(dispatch, {
-        'activeChallenge':
-        this.props.fileStore.challenges
-            .filter((challenge) => {
-              return challenge.id === id;
-            }).pop(), 'view': 'ChallengeEdit'
-      });
-    }
-  }
-
-  render() {
-    console.log(this.state);
-    let discard = (
-      <RaisedButton label='Discard Changes'
-        onClick={this.forceOpenNav}
-        primary={true}
-      />
-    );
-
-    let save = (
-      <RaisedButton label='Save Changes'
-        onClick={this.modalSave}
-        secondary={true}
-      />
-    );
-
-    // Modal.setAppElement('#modal');
-    let modal = (
-      <Modal
-        isOpen = {this.state.modalIsOpen}
-        onRequestClose={this.closeModal}
-        style = {modalStyles}>
-        <h2>Warning:</h2>
-        <p>You are attempting to load a file but you have changes.</p>
-        {discard} {save}
-      </Modal>
-    );
-
-    let snackBar = (
-      <Snackbar action='OK'
-        autoHideDuration={3000}
-        message='File saved successfully'
-        onActionTouchTap={this.handleSnackbar}
-        ref='snackbar'
-      />
-    );
-
-    let elements = [];
-    let selectChallenges;
-    if (this.props !== null && this.props.view === 'ChallengeSelect') {
-      elements = [
-        {
-          name: 'Choose File',
-          action: this.handleOpenNav.bind(this)
-        }
-      ];
-    } else {
-      elements = [
-        {
-          name: 'Choose File',
-          action: this.handleOpenNav.bind(this)
-        },
-        {
-          name: 'Choose Challenge',
-          action: this.backView
-        },
-        {
-          name: 'Prev',
-          action: this.handlePrevNext.bind(this, -1)
-        },
-        {
-          name: 'Next',
-          action: this.handlePrevNext.bind(this, 1)
-        },
-        {
-          name: 'Save',
-          action: this.exportFiles,
-          id: 'Save'
+      if (this.props !== null
+        && this.props.fileStore
+        && Object.keys(this.props.fileStore).length) {
+          selectChallenges = (
+            <SelectChallenge
+              challengeClick = {this.handleChallengeClick}
+              data = {this.props.fileStore}
+              />
+          );
         }
 
-      ];
-    }
-
-    if (this.props !== null
-      && this.props.fileStore
-      && Object.keys(this.props.fileStore).length) {
-        selectChallenges = (
-          <SelectChallenge
-            challengeClick = {this.handleChallengeClick}
-            data = {this.props.fileStore}
+        let menu =
+        <Menu elements = {elements} />;
+        let leftNav = this.props.files ?
+        <FileExplorer
+          dispatch= {this.props.dispatch}
+          files= {this.props.files}
+          loadFile= {this.handleFileIsSelected}
+          ref='leftNav'
           />
-        );
-    }
+        : null;
 
-    let menu =
-    <Menu elements = {elements} />;
-    let leftNav = this.props.files ?
-                  <FileExplorer dispatch= {this.props.dispatch}
-                    files= {this.props.files}
-                    loadFile= {this.handleFileIsSelected}
-                    ref='leftNav'
-                  />
-                : null;
+        if (Object.keys(this.props.view === 'ChallengeEdit' &&
+        this.props.activeChallenge).length) {
+          return (
+            <div>
+              <div id='modal'>{modal}</div>
+              <div className = 'app'>
+                {leftNav}
+                {menu}
+                <div style = {{ 'marginTop': '70px' }}>
+                  <Editor id={this.props.activeChallenge.id} />
+                </div>
+              </div>
+              {snackBar}
+            </div>
+          );
+        } else {
 
-    if (Object.keys(this.props.view === 'ChallengeEdit' &&
-      this.props.activeChallenge).length) {
-        return (
-          <div>
-            <div id='modal'>{modal}</div>
-            <div className = 'app'>
-              {leftNav}
-              {menu}
-              <div style = {{ 'marginTop': '70px' }}>
-                <Editor id={this.props.activeChallenge.id} />
+
+          return (
+            <div>
+              <div id='modal'>{modal}</div>
+              <div className = 'app'>
+                {leftNav}
+                <div style = {{ 'marginTop': '70px' }}>
+                  {selectChallenges}
+                </div>
+                {menu}
               </div>
             </div>
-            {snackBar}
-          </div>
-        );
-    } else {
-
-
-      return (
-        <div>
-          <div id='modal'>{modal}</div>
-          <div className = 'app'>
-            {leftNav}
-            <div style = {{ 'marginTop': '70px' }}>
-              {selectChallenges}
-            </div>
-            {menu}
-          </div>
-        </div>
-      );
+          );
+        }
+      }
     }
-  }
-}
 
-export default connector(GrandCentralStation);
+    export default connector(GrandCentralStation);
 
-GrandCentralStation.propTypes = {
-  dispatch: React.PropTypes.func.isRequired,
-  fileStore: React.PropTypes.object,
-  activeFile: React.PropTypes.string,
-  view: React.PropTypes.string.isRequired,
-  activeChallenge: React.PropTypes.object,
-  challenges: React.PropTypes.array,
-  files: React.PropTypes.array,
-  changes: React.PropTypes.bool,
-  title: React.PropTypes.string
-};
+    GrandCentralStation.propTypes = {
+      dispatch: React.PropTypes.func.isRequired,
+      fileStore: React.PropTypes.object,
+      activeFile: React.PropTypes.string,
+      view: React.PropTypes.string.isRequired,
+      activeChallenge: React.PropTypes.object,
+      challenges: React.PropTypes.array,
+      files: React.PropTypes.array,
+      changes: React.PropTypes.bool,
+      title: React.PropTypes.string
+    };

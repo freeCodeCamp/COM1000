@@ -16,7 +16,8 @@ function parser(key) {
     case 'tail':
     case 'challengeSeed':
     case 'MDNlinks':
-    case 'solutions':  // NOTE:  This only works for one solution
+    case 'solutions':
+      // NOTE:  This only works for one solution
       return function(val) { return val.split('\n'); };
     case 'tests':
       return function(val) { return val.split('EOL\n'); };
