@@ -6,7 +6,8 @@ import $ from 'jquery';
 const leftNavStyle = {
   whiteSpace: 'nowrap',
   fontSize: '12px',
-  display: 'block'
+  display: 'block',
+  top: '50px'
 };
 
 export default class FileExplorer extends Component {
