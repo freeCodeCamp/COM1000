@@ -363,7 +363,7 @@ class GrandCentralStation extends Component {
       view: React.PropTypes.string.isRequired,
       activeChallenge: React.PropTypes.object,
       challenges: React.PropTypes.array,
-      files: React.PropTypes.array,
+      files: React.PropTypes.object,
       changes: React.PropTypes.bool,
       title: React.PropTypes.string
     };

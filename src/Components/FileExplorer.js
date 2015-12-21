@@ -17,19 +17,27 @@ export default class FileExplorer extends Component {
   }
 
   handleSelectedFile() {
+    console.log(arguments);
     let fileTitle = arguments[2].text;
-    console.log(fileTitle);
     $.getJSON('/files/' + fileTitle, (file => {
       this.props.loadFile(file, fileTitle);
     }));
   }
 
   render() {
-    let menuItems = this.props.files.map((elem) => {
-      return (
-        {text: elem}
-      );
+    console.log(this.props.files);
+    let headers = Object.keys(this.props.files);
+    let menuItems = [];
+    headers.forEach(key => {
+      this.props.files[key].forEach(elem => {
+        menuItems.push({text: `${key}/${elem}`});
+      });
     });
+    // let menuItems = this.props.files.map((elem) => {
+    //   return (
+    //     {text: elem}
+    //   );
+    // });
 
     return (
       <LeftNav docked={false}
@@ -43,7 +51,7 @@ export default class FileExplorer extends Component {
 }
 
 FileExplorer.propTypes = {
-  files: React.PropTypes.array.isRequired,
+  files: React.PropTypes.object.isRequired,
   dispatch: React.PropTypes.func.isRequired,
   loadFile: React.PropTypes.func.isRequired
 };

@@ -63,7 +63,7 @@ export default function(prevState = initialState, action) {
       return (Object.assign({}, prevState, action.payload));
 
     case 'loadFileExplorer':
-        return (Object.assign({}, prevState, action.payload));
+      return (Object.assign({}, prevState, action.payload));
 
     case 'fileSaved':
       let newState = Object.assign({}, prevState, {});
