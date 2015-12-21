@@ -104,19 +104,16 @@ class GrandCentralStation extends Component {
     exportFiles() {
       let data = {};
       data[this.props.title] = this.props.fileStore;
-      console.log(data);
       $.post('/export', {
         data,
         success: function(data) {
           fileSaved(this.props.dispatch);
           this.refs.snackbar.show();
-          console.log(data);
         }.bind(this)
       });
     }
 
     openModal() {
-      console.log('maybe opening modal');
       this.setState({modalIsOpen: true});
     }
 
@@ -155,7 +152,6 @@ class GrandCentralStation extends Component {
 
     handleOpenNav() {
       if (this.props.changes) {
-        console.log('trying to fire modal');
         this.openModal();
       } else {
         this.forceOpenNav();
@@ -226,7 +222,6 @@ class GrandCentralStation extends Component {
     }
 
     render() {
-      console.log(this.state);
       let discard = (
         <RaisedButton label='Discard Changes'
           onClick={this.forceOpenNav}

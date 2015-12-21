@@ -17,7 +17,6 @@ export default class FileExplorer extends Component {
 
   handleSelectedFile() {
     let fileTitle = arguments[2].text;
-    console.log(fileTitle);
     $.getJSON('/files/' + fileTitle, (file => {
       this.props.loadFile(file, fileTitle);
     }));
