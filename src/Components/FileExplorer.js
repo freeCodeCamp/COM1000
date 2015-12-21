@@ -25,7 +25,6 @@ export default class FileExplorer extends Component {
   }
 
   render() {
-    console.log(this.props.files);
     let headers = Object.keys(this.props.files);
     let menuItems = [];
     headers.forEach(key => {

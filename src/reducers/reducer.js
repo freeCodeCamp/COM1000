@@ -44,7 +44,6 @@ export default function(prevState = initialState, action) {
     nextState.challenges = challenges;
     nextState.fileStore.challenges = challenges;
     nextState.changes = true;
-    console.log(nextState);
     return nextState;
 
     case 'createChallenge':
