@@ -26,10 +26,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.post('/export', function(req, res, next) {
   /*eslint-enable*/
   Object.keys(req.body.data).forEach(function(file) {
-    console.log(file);
     var fileData = req.body.data[file];
-    console.log('writing file data');
-    console.log(JSON.stringify(fileData, null, 2));
     fs.writeFile(config.fccPath + file,
       JSON.stringify(fileData, null, 2),
       function(err) {
@@ -49,7 +46,6 @@ app.get('/files', (req, res, next) => {
       acc[curr] = fs.readdirSync(`${config.fccPath}/${curr}`);
       return acc;
     }, {});
-    console.log(fileObj);
     return res.json(fileObj);
   });
 });
