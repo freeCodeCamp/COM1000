@@ -17,10 +17,10 @@ export default class FileExplorer extends Component {
   }
 
   handleSelectedFile() {
-    console.log(arguments);
     let fileTitle = arguments[2].text;
-    $.getJSON('/files/' + fileTitle, (file => {
-      this.props.loadFile(file, fileTitle);
+    let fileDirectory = arguments[2].directory;
+    $.getJSON(`/files/${fileDirectory}/${fileTitle}`, (file => {
+      this.props.loadFile(file, fileTitle, fileDirectory);
     }));
   }
 
@@ -30,7 +30,7 @@ export default class FileExplorer extends Component {
     let menuItems = [];
     headers.forEach(key => {
       this.props.files[key].forEach(elem => {
-        menuItems.push({text: `${key}/${elem}`});
+        menuItems.push({text: elem, directory: key});
       });
     });
     // let menuItems = this.props.files.map((elem) => {
@@ -41,10 +41,10 @@ export default class FileExplorer extends Component {
 
     return (
       <LeftNav docked={false}
-        menuItems = {menuItems}
-        onChange = {this.handleSelectedFile.bind(this)}
-        ref='fileExplorer'
-        style = {leftNavStyle}
+               menuItems = {menuItems}
+               onChange = {this.handleSelectedFile.bind(this)}
+               ref='fileExplorer'
+               style = {leftNavStyle}
         />
     );
   }

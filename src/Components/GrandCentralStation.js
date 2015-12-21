@@ -138,14 +138,14 @@ class GrandCentralStation extends Component {
       });
     }
 
-    handleFileIsSelected(file, title) {
+  handleFileIsSelected(file, title, directory) {
       let dispatch = this.props.dispatch;
       let newFileStoreObject = this.props.fileStore;
       file = JSON.parse(file);
       newFileStoreObject = file;
 
       loadFile(dispatch, {
-        title,
+        title: `${directory}/${title}`,
         fileStore: newFileStoreObject,
         activeFile: file.name,
         challenges: newFileStoreObject.challenges,
