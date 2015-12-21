@@ -44,7 +44,6 @@ export default function(prevState = initialState, action) {
     nextState.challenges = challenges;
     nextState.fileStore.challenges = challenges;
     nextState.changes = true;
-    console.log(nextState);
     return nextState;
 
     case 'createChallenge':
@@ -63,7 +62,7 @@ export default function(prevState = initialState, action) {
       return (Object.assign({}, prevState, action.payload));
 
     case 'loadFileExplorer':
-        return (Object.assign({}, prevState, action.payload));
+      return (Object.assign({}, prevState, action.payload));
 
     case 'fileSaved':
       let newState = Object.assign({}, prevState, {});

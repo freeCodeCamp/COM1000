@@ -26,10 +26,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.post('/export', function(req, res, next) {
   /*eslint-enable*/
   Object.keys(req.body.data).forEach(function(file) {
-    console.log(file);
     var fileData = req.body.data[file];
-    console.log('writing file data');
-    console.log(JSON.stringify(fileData, null, 2));
     fs.writeFile(config.fccPath + file,
       JSON.stringify(fileData, null, 2),
       function(err) {
@@ -40,19 +37,27 @@ app.post('/export', function(req, res, next) {
 });
 
 app.get('/files', (req, res, next) => {
+  var fileObj;
   fs.readdir(config.fccPath, (err, files) => {
     if (err) {
       return next(err);
     }
-    return res.json(files);
+    fileObj = files.reduce((acc, curr) => {
+      acc[curr] = fs.readdirSync(`${config.fccPath}/${curr}`);
+      return acc;
+    }, {});
+    return res.json(fileObj);
   });
 });
 
-app.get('/files/:fileName', (req, res, next) => {
-  fs.readFile(config.fccPath + '/' + req.params.fileName,
+app.get('/files/:filePath/:fileName', (req, res, next) => {
+  fs.readFile(`${config.fccPath}/${req.params.filePath}/${req.params.fileName}`,
   'utf8',
   (err, data) => {
-    if (err) {return next(err);}
+    if (err) {
+      console.error(err);
+      return next(err);
+    }
     return res.json(data);
   });
 });
