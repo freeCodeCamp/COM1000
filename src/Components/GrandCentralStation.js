@@ -71,6 +71,7 @@ class GrandCentralStation extends Component {
 
   handleKeyboardSave(e) {
     if (e.keyCode === 83 && e.ctrlKey) {
+      e.preventDefault();
       this.modalSave();
     }
   }
