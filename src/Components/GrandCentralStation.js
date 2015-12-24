@@ -55,6 +55,7 @@ class GrandCentralStation extends Component {
     this.modalSave = this.modalSave.bind(this);
     this.forceOpenNav = this.forceOpenNav.bind(this);
     this.handleSnackbar = this.handleSnackbar.bind(this);
+    this.handleKeyboardSave = this.handleKeyboardSave.bind(this);
     this.state = {
       modalIsOpen: false
     };
@@ -67,6 +68,14 @@ class GrandCentralStation extends Component {
       loadFileExplorer(dispatch, {files});
     });
   }
+
+  handleKeyboardSave(e) {
+    if (e.keyCode === 83 && e.ctrlKey) {
+      e.preventDefault();
+      this.modalSave();
+    }
+  }
+
 
   handleSnackbar() {
     console.log('Snackbar dismissed');
@@ -106,7 +115,7 @@ class GrandCentralStation extends Component {
       data[this.props.title] = this.props.fileStore;
       $.post('/export', {
         data,
-        success: function(data) {
+        success: function(_data) {
           fileSaved(this.props.dispatch);
           this.refs.snackbar.show();
         }.bind(this)
@@ -318,7 +327,7 @@ class GrandCentralStation extends Component {
         if (Object.keys(this.props.view === 'ChallengeEdit' &&
         this.props.activeChallenge).length) {
           return (
-            <div>
+            <div onKeyDown={this.handleKeyboardSave}>
               <div id='modal'>{modal}</div>
               <div className = 'app'>
                 {leftNav}
