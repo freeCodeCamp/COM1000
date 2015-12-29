@@ -19,7 +19,15 @@ function parser(key) {
     case 'solutions':
       // NOTE:  This only works for one solution
       //return function(val) { return val.split('\n'); };
-      return function(val) { var data = JSON.parse(val).map(function(solution){ return (solution); }); console.log(data); return(data);};
+      return function(val) {
+        console.log(val.split('\nEOS;')
+          .filter(function(val){
+            return(val.replace(/\s/gi).length > 0);
+          }));
+        return(val.split('\nEOS;')
+          .filter(function(val){
+            return(val.replace(/\s/gi).length > 0)
+          }));};
     case 'tests':
       return function(val) { return val.split('EOL\n'); };
     default:
@@ -41,29 +49,22 @@ export default function(prevState = initialState, action) {
         }
         return (challenge);
       });
-    let nextState = Object.assign({}, prevState, {});
-    nextState.challenges = challenges;
-    nextState.fileStore.challenges = challenges;
-    nextState.changes = true;
-    return nextState;
+      let nextState = Object.assign({}, prevState, {});
+      nextState.challenges = challenges;
+      nextState.fileStore.challenges = challenges;
+      nextState.changes = true;
+      return nextState;
 
     case 'createChallenge':
       return (Object.assign({}, prevState, action.payload));
 
     case 'loadChallenge':
       let cData = Object.assign({}, prevState, action.payload);
-      if(typeof cData.activeChallenge.solutions !=='undefined'){
-        if(Array.isArray(cData.activeChallenge.solutions)){
-          cData.activeChallenge.solutions = cData.activeChallenge.solutions.map(function(solution){
-            return JSON.stringify(solution);
-          });
-        }
-        else {
-          console.error('Passed solutions field is not an array', "something went wrong", "received:", cData.activeChallenge.solutions);
-        }
-        cData.activeChallenge.solutions = JSON.stringify(cData.activeChallenge.solutions);
-      }
-      console.log(cData.activeChallenge.solutions);
+      let sData = [""];
+      cData.activeChallenge.solutions.map(function(sol){
+        sData[0] = sData[0] + sol + "\nEOS;";
+      });
+      cData.activeChallenge.solutions = sData;
       return (cData);
 
     case 'loadFile':
