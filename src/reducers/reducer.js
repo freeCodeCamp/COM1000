@@ -57,7 +57,7 @@ export default function(prevState = initialState, action) {
       let cData = Object.assign({}, prevState, action.payload);
       let sData = [""];
       cData.activeChallenge.solutions.map(function(sol){
-        sData[0] = sData[0] + sol + "\nEOS;";
+        sData[0] = sData[0] + sol + "EOS\n";
       });
       cData.activeChallenge.solutions = sData;
       return (cData);
