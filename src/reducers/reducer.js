@@ -16,15 +16,11 @@ function parser(key) {
     case 'tail':
     case 'challengeSeed':
     case 'MDNlinks':
+      return function(val) { return val.split('\n'); };
     case 'solutions':
-      // NOTE:  This only works for one solution
-      return function(val) {
-        return(val.split('EOS\n')
-          .filter(function(val){
-            return(val.replace(/\s/gi).length > 0)
-          }));};
+      return function(val) { return val.split(/\s*EOS\s*/); };
     case 'tests':
-      return function(val) { return val.split('EOL\n'); };
+      return function(val) { return val.split(/\s*EOL\s*/); };
     default:
       return function(val) { return val; };
   }
@@ -54,13 +50,7 @@ export default function(prevState = initialState, action) {
       return (Object.assign({}, prevState, action.payload));
 
     case 'loadChallenge':
-      let cData = Object.assign({}, prevState, action.payload);
-      let sData = [""];
-      cData.activeChallenge.solutions.map(function(sol){
-        sData[0] = sData[0] + sol + "EOS\n";
-      });
-      cData.activeChallenge.solutions = sData;
-      return (cData);
+      return (Object.assign({}, prevState, action.payload));
 
     case 'loadFile':
       return (Object.assign({}, prevState, action.payload));

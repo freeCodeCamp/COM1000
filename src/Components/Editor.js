@@ -61,6 +61,8 @@ class Editor extends Component {
       if (Array.isArray(data[1])) {
         if (data[0] === 'tests') {
           data[1] = data[1].join('EOL\n');
+        } else if(data[0] === 'solutions') {
+          data[1] = data[1].join('\nEOS\n');
         } else {
           data[1] = data[1].join('\n');
         }
