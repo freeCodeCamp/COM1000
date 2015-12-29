@@ -18,13 +18,8 @@ function parser(key) {
     case 'MDNlinks':
     case 'solutions':
       // NOTE:  This only works for one solution
-      //return function(val) { return val.split('\n'); };
       return function(val) {
-        console.log(val.split('\nEOS;')
-          .filter(function(val){
-            return(val.replace(/\s/gi).length > 0);
-          }));
-        return(val.split('\nEOS;')
+        return(val.split('EOS\n')
           .filter(function(val){
             return(val.replace(/\s/gi).length > 0)
           }));};
