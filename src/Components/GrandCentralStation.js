@@ -50,6 +50,7 @@ class GrandCentralStation extends Component {
     this.handleFileSelect = this.handleFileSelect.bind(this);
     this.handleFileIsSelected = this.handleFileIsSelected.bind(this);
     this.handleChallengeClick = this.handleChallengeClick.bind(this);
+    this.handleChallengeDupe = this.handleChallengeDupe.bind(this);
     this.openModal = this.openModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
     this.modalSave = this.modalSave.bind(this);
@@ -144,11 +145,32 @@ class GrandCentralStation extends Component {
       });
     }
 
-  handleFileIsSelected(file, title, directory) {
+    handleFileIsSelected(file, title, directory) {
       let dispatch = this.props.dispatch;
       let newFileStoreObject = this.props.fileStore;
       file = JSON.parse(file);
       newFileStoreObject = file;
+
+      newFileStoreObject.challenges = newFileStoreObject.challenges.map((challenge) => {
+        return Object.assign({}, {
+          id: "",
+          title: "",
+          description: [],
+          head: [],
+          challengeSeed: [],
+          tail: [],
+          solutions: [],
+          tests: [],
+          releasedOn: "",
+          type: "",
+          challengeType: "",
+          nameCn: "",
+          nameFr: "",
+          nameRu: "",
+          nameEs: "",
+          namePt: ""
+        }, challenge);
+      });
 
       loadFile(dispatch, {
         title: `${directory}/${title}`,
@@ -226,6 +248,33 @@ class GrandCentralStation extends Component {
           }).pop(), 'view': 'ChallengeEdit'
         });
       }
+    }
+
+    handleChallengeDupe(e) {
+      let dispatch = this.props.dispatch;
+      let oldFileStore = Object.assign({}, this.props.fileStore);
+      $.getJSON('/mongoid', function(mongoid) {
+        mongoid = mongoid.objectId;
+        let dupe;
+        oldFileStore.challenges.map((challenge) => {
+          if(challenge.id === e.target.dataset.challengid){
+            dupe = Object.assign({}, challenge, {
+              'id': mongoid,
+              'title': challenge.title + " - Copy"
+            });
+          }
+          return(challenge);
+        });
+        if(typeof dupe !== 'undefined') {
+          oldFileStore.challenges.push(dupe);
+
+          let AddedChallenge = {fileStore: oldFileStore};
+
+          createChallenge(dispatch,
+            AddedChallenge
+          );
+        }
+      });
     }
 
     render() {
@@ -306,6 +355,7 @@ class GrandCentralStation extends Component {
           selectChallenges = (
             <SelectChallenge
               challengeClick = {this.handleChallengeClick}
+              handleChallengeDupe = {this.handleChallengeDupe}
               data = {this.props.fileStore}
               />
           );

@@ -15,12 +15,12 @@ export default class SelectChallenge extends Component {
   render() {
     let data = this.props.data.challenges.map((challenge) => {
       return (
-        <ListItem
-          data-challengid = {challenge.id}
-          key = {challenge.id}
-          onClick = {this.handleClick.bind(this, challenge.id)}
-          primaryText = {challenge.title}
-          />
+        <ListItem key = {challenge.id}>
+          <div style = {{width: '100%', display: 'flex'}}>
+            <div data-challengid = {challenge.id} onClick = {this.handleClick.bind(this, challenge.id)} style = {{flex: "1 1 auto"}}>{challenge.title}</div>
+            <button data-challengid = {challenge.id} onClick = {this.props.handleChallengeDupe} style = {{flex: "0 0 auto"}}>Copy</button>
+          </div>
+        </ListItem>
       );
     });
 
