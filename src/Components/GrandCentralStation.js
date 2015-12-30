@@ -8,7 +8,7 @@ import {
   fileSelect,
   loadFileExplorer,
   fileSaved
-} from './../actions/editorActions';
+} from '../actions/editorActions';
 
 import $ from 'jquery';
 
@@ -175,13 +175,11 @@ class GrandCentralStation extends Component {
     handleChallengeClick(id) {
       let dispatch = this.props.dispatch;
 
-      let oldFileStore = this.props.fileStore;
-      let currentFile = this.props.activeFile;
-
+      let oldFileStore = Object.assign({}, this.props.fileStore);
       if (id === 'new') {
         $.getJSON('/mongoid', function(mongoid) {
           mongoid = mongoid.objectId;
-          oldFileStore[currentFile].challenges.push({
+          oldFileStore.challenges.push({
             'id': mongoid,
             'title': mongoid,
             'description': [
