@@ -3,6 +3,7 @@ import './../../node_modules/codemirror/theme/monokai.css';
 import './../../node_modules/codemirror/addon/scroll/simplescrollbars.css';
 
 import React, {Component} from 'react';
+import $ from 'jquery';
 
 import {updateChallenge} from './../actions/editorActions';
 
@@ -57,6 +58,18 @@ class Editor extends Component {
       return (field[0] !== 'id');
     });
 
+    this.editorLayout = this.props.editorLayout;
+
+    let layout = {
+
+    };
+
+    for(var header in this.editorLayout){
+      layout[header] = [];
+    }
+
+    let finalHTML = [];
+
     unrenderedCodeMirrors = codeMirrorData.map(function(data) {
       if (Array.isArray(data[1])) {
         if (data[0] === 'tests') {
@@ -75,10 +88,39 @@ class Editor extends Component {
       );
     });
 
+    for(var i = 0; i < unrenderedCodeMirrors.length; i++){
+      let unrenderedCodeMirror = unrenderedCodeMirrors[i];
+      for(var j in this.editorLayout){
+        if(this.editorLayout[j].map((head) => {return(head.name)}).indexOf(unrenderedCodeMirror.key) > -1){
+          if(layout[j].indexOf(unrenderedCodeMirror) < 0) {
+            layout[j].push(unrenderedCodeMirror);
+          }
+        }
+        else {
+          if(layout['misc'].indexOf(unrenderedCodeMirror) < 0 && layout[j].indexOf(unrenderedCodeMirror) < 0) {
+            layout['misc'].push(unrenderedCodeMirror);
+          }
+        }
+      }
+    }
+
+    for(var k in layout){
+      finalHTML.push(
+        <div className = {"tab " + k} data-tab = {k} key = {k}>
+          {layout[k]}
+        </div>
+      );
+    }
+
     this.state = {
       codeMirrorData: codeMirrorData,
-      unrenderedCodeMirrors: unrenderedCodeMirrors
+      unrenderedCodeMirrors: finalHTML
     };
+  }
+
+  toggleTabs(e) {
+    $('.tab').hide();
+    $('.' + e.target.dataset.tab).show();
   }
 
   componentDidMount() {
@@ -87,6 +129,7 @@ class Editor extends Component {
     const challengeId = this.props.challenge.id;
     const activeFile = this.props.activeFile;
     const challengeType = this.props.challenge.challengeType;
+    const editorLayout = this.editorLayout;
 
     this.state.codeMirrorData.map(function(codeMirror) {
       // Determine mode
@@ -108,7 +151,15 @@ class Editor extends Component {
           mode = 'htmlmixed';
           break;
       }
+
+      let cHeader = "";
+
       /* eslint-enable no-fallthrough */
+      for(var header in editorLayout){
+        if(editorLayout[header].map((field) => {return(field.name);}).indexOf(codeMirror[0]) > -1){
+          cHeader = header;
+        }
+      }
 
       let editor = CodeMirror.fromTextArea(
         document.getElementById(codeMirror[0]),
@@ -125,6 +176,10 @@ class Editor extends Component {
         }
       );
 
+      let cData = editorLayout[cHeader].filter((data) => {return(data.name === codeMirror[0]);})[0];
+
+      editor.setSize(cData.dimens[1], cData.dimens[0]);
+
       editor.on('change', function(instance) {
         updateChallenge(dispatch,
           {
@@ -137,15 +192,29 @@ class Editor extends Component {
           }
         );
       });
-
       codeMirrors.push(editor);
     });
+    $('.tab').hide();
+    $('.meta').show();
   }
 
   render() {
+    let tabButtons = [];
+    for(var tab in this.editorLayout){
+      tabButtons.push(
+        <div key = {tab} onClick = {this.toggleTabs} data-tab = {tab} className = "tabSelector">
+          {tab.split("_").join(" ")}
+        </div>
+      );
+    }
     return (
-      <div>
-        {this.state.unrenderedCodeMirrors}
+      <div className = "editorContainer">
+        <div className = "selectors">
+          {tabButtons}
+        </div>
+        <div className = "tabContainer">
+          {this.state.unrenderedCodeMirrors}
+        </div>
       </div>
     );
   }

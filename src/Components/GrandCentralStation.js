@@ -57,6 +57,67 @@ class GrandCentralStation extends Component {
     this.forceOpenNav = this.forceOpenNav.bind(this);
     this.handleSnackbar = this.handleSnackbar.bind(this);
     this.handleKeyboardSave = this.handleKeyboardSave.bind(this);
+
+    this.challengeSkeleton = {
+      id: "",
+      title: "",
+      description: [],
+      head: [],
+      challengeSeed: [],
+      tail: [],
+      solutions: [],
+      tests: [],
+      releasedOn: "",
+      type: "",
+      challengeType: 0,
+      nameCn: "",
+      descriptionCn: "",
+      nameFr: "",
+      descriptionFr: "",
+      nameRu: "",
+      descriptionRu: "",
+      nameEs: "",
+      descriptionEs: "",
+      namePt: "",
+      descriptionPt: ""
+    };
+
+    // Dimensions are given as [ Height, Width ]
+
+    this.editorLayout = {
+      meta: [
+        {name: "title", dimens: ['30px', 'auto']},
+        {name: "description", dimens: ['180px', 'auto']},
+        {name: "releasedOn", dimens: ['30px', 'auto']},
+        {name: "type", dimens: ['30px', 'auto']},
+        {name: "challengeType", dimens: ['30px', 'auto']}
+      ],
+      code: [
+        {name: "head", dimens: ['180px', 'auto']},
+        {name: "challengeSeed", dimens: ['360px', 'auto']},
+        {name: "tail", dimens: ['180px', 'auto']}
+      ],
+      test_solutions: [
+        {name: "solutions", dimens: ['240px', 'auto']},
+        {name: "tests", dimens: ['240px', 'auto']}
+      ],
+      localization: [
+        {name: "nameCn", dimens: ['30px', 'auto']},
+        {name: "descriptionCn", dimens: ['180px', 'auto']},
+        {name: "nameFr", dimens: ['30px', 'auto']},
+        {name: "descriptionFr", dimens: ['180px', 'auto']},
+        {name: "nameRu", dimens: ['30px', 'auto']},
+        {name: "descriptionRu", dimens: ['180px', 'auto']},
+        {name: "nameEs", dimens: ['30px', 'auto']},
+        {name: "descriptionEs", dimens: ['180px', 'auto']},
+        {name: "namePt", dimens: ['30px', 'auto']},
+        {name: "descriptionPt", dimens: ['180px', 'auto']}
+      ],
+      misc: [
+
+      ]
+    };
+
     this.state = {
       modalIsOpen: false
     };
@@ -152,24 +213,7 @@ class GrandCentralStation extends Component {
       newFileStoreObject = file;
 
       newFileStoreObject.challenges = newFileStoreObject.challenges.map((challenge) => {
-        return Object.assign({}, {
-          id: "",
-          title: "",
-          description: [],
-          head: [],
-          challengeSeed: [],
-          tail: [],
-          solutions: [],
-          tests: [],
-          releasedOn: "",
-          type: "",
-          challengeType: "",
-          nameCn: "",
-          nameFr: "",
-          nameRu: "",
-          nameEs: "",
-          namePt: ""
-        }, challenge);
+        return Object.assign({}, this.challengeSkeleton, challenge);
       });
 
       loadFile(dispatch, {
@@ -201,37 +245,10 @@ class GrandCentralStation extends Component {
       if (id === 'new') {
         $.getJSON('/mongoid', function(mongoid) {
           mongoid = mongoid.objectId;
-          oldFileStore.challenges.push({
+          oldFileStore.challenges.push(Object.assign({}, this.challengeSkeleton, {
             'id': mongoid,
-            'title': mongoid,
-            'description': [
-              ''
-            ],
-            'tests': [
-              ''
-            ],
-            'challengeSeed': [
-              ''
-            ],
-            'MDNlinks': [
-              ''
-            ],
-            'solutions': [
-              ''
-            ],
-            'type': '',
-            'challengeType': 0,
-            'nameCn': '',
-            'descriptionCn': [],
-            'nameFr': '',
-            'descriptionFr': [],
-            'nameRu': '',
-            'descriptionRu': [],
-            'nameEs': '',
-            'descriptionEs': [],
-            'namePt': '',
-            'descriptionPt': []
-          });
+            'title': mongoid
+          }));
 
           let AddedChallenge = {fileStore: oldFileStore};
 
@@ -381,7 +398,7 @@ class GrandCentralStation extends Component {
                 {leftNav}
                 {menu}
                 <div style = {{ 'marginTop': '70px' }}>
-                  <Editor id={this.props.activeChallenge.id} />
+                  <Editor editorLayout = {this.editorLayout} id={this.props.activeChallenge.id} />
                 </div>
               </div>
               {snackBar}
