@@ -58,65 +58,11 @@ class GrandCentralStation extends Component {
     this.handleSnackbar = this.handleSnackbar.bind(this);
     this.handleKeyboardSave = this.handleKeyboardSave.bind(this);
 
-    this.challengeSkeleton = {
-      id: "",
-      title: "",
-      description: [],
-      head: [],
-      challengeSeed: [],
-      tail: [],
-      solutions: [],
-      tests: [],
-      releasedOn: "",
-      type: "",
-      challengeType: 0,
-      nameCn: "",
-      descriptionCn: "",
-      nameFr: "",
-      descriptionFr: "",
-      nameRu: "",
-      descriptionRu: "",
-      nameEs: "",
-      descriptionEs: "",
-      namePt: "",
-      descriptionPt: ""
-    };
+    this.challengeSkeleton = {};
 
     // Dimensions are given as [ Height, Width ]
 
-    this.editorLayout = {
-      meta: [
-        {name: "title", dimens: ['30px', 'auto']},
-        {name: "description", dimens: ['180px', 'auto']},
-        {name: "releasedOn", dimens: ['30px', 'auto']},
-        {name: "type", dimens: ['30px', 'auto']},
-        {name: "challengeType", dimens: ['30px', 'auto']}
-      ],
-      code: [
-        {name: "head", dimens: ['180px', 'auto']},
-        {name: "challengeSeed", dimens: ['360px', 'auto']},
-        {name: "tail", dimens: ['180px', 'auto']}
-      ],
-      test_solutions: [
-        {name: "solutions", dimens: ['240px', 'auto']},
-        {name: "tests", dimens: ['240px', 'auto']}
-      ],
-      localization: [
-        {name: "nameCn", dimens: ['30px', 'auto']},
-        {name: "descriptionCn", dimens: ['180px', 'auto']},
-        {name: "nameFr", dimens: ['30px', 'auto']},
-        {name: "descriptionFr", dimens: ['180px', 'auto']},
-        {name: "nameRu", dimens: ['30px', 'auto']},
-        {name: "descriptionRu", dimens: ['180px', 'auto']},
-        {name: "nameEs", dimens: ['30px', 'auto']},
-        {name: "descriptionEs", dimens: ['180px', 'auto']},
-        {name: "namePt", dimens: ['30px', 'auto']},
-        {name: "descriptionPt", dimens: ['180px', 'auto']}
-      ],
-      misc: [
-
-      ]
-    };
+    this.editorLayout = {};
 
     this.state = {
       modalIsOpen: false
@@ -126,8 +72,21 @@ class GrandCentralStation extends Component {
 
   componentWillMount() {
     const dispatch = this.props.dispatch;
-    $.getJSON('/files', (files) => {
-      loadFileExplorer(dispatch, {files});
+    let self = this;
+    $.ajax({
+      url: "./headerConfig.json",
+      async: true
+    }).done(function(headerConfigData){
+      self.editorLayout = headerConfigData;
+      $.ajax({
+        url: "./editorLayout.json",
+        async: true
+      }).done(function(editorLayoutData){
+        self.challengeSkeleton = editorLayoutData;
+        $.getJSON('/files', (files) => {
+          loadFileExplorer(dispatch, {files});
+        });
+      });
     });
   }
 
@@ -240,12 +199,12 @@ class GrandCentralStation extends Component {
 
     handleChallengeClick(id) {
       let dispatch = this.props.dispatch;
-
+      let challengeSkeleton = this.challengeSkeleton;
       let oldFileStore = Object.assign({}, this.props.fileStore);
       if (id === 'new') {
         $.getJSON('/mongoid', function(mongoid) {
           mongoid = mongoid.objectId;
-          oldFileStore.challenges.push(Object.assign({}, this.challengeSkeleton, {
+          oldFileStore.challenges.unshift(Object.assign({}, challengeSkeleton, {
             'id': mongoid,
             'title': mongoid
           }));
@@ -257,6 +216,10 @@ class GrandCentralStation extends Component {
           );
         });
       } else {
+        console.log(this.props.fileStore.challenges
+          .filter((challenge) => {
+            return challenge.id === id;
+          }).pop());
         loadChallenge(dispatch, {
           'activeChallenge':
           this.props.fileStore.challenges
@@ -283,7 +246,19 @@ class GrandCentralStation extends Component {
           return(challenge);
         });
         if(typeof dupe !== 'undefined') {
-          oldFileStore.challenges.push(dupe);
+          let index = oldFileStore.challenges.length;
+          let originalLength = index;
+          for(var i = 0; i < originalLength; i++){
+            let challenge = oldFileStore.challenges[i];
+            if(challenge.id === e.target.dataset.challengid){
+              index = i+1;
+              break;
+            }
+          }
+
+          console.log(index);
+
+          oldFileStore.challenges.splice(index, 0, dupe);
 
           let AddedChallenge = {fileStore: oldFileStore};
 

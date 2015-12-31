@@ -26,13 +26,13 @@ export default class SelectChallenge extends Component {
 
     return (
       <List>
-        {data}
         <ListItem
           data-challengid = 'new'
           key = 'new'
           onClick = {this.handleClick.bind(this, 'new')}
           primaryText = 'Create new'
-          />
+        />
+        {data}
       </List>
     );
   }
