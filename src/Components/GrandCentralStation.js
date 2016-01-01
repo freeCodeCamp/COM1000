@@ -216,10 +216,6 @@ class GrandCentralStation extends Component {
           );
         });
       } else {
-        console.log(this.props.fileStore.challenges
-          .filter((challenge) => {
-            return challenge.id === id;
-          }).pop());
         loadChallenge(dispatch, {
           'activeChallenge':
           this.props.fileStore.challenges

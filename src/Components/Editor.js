@@ -128,7 +128,7 @@ class Editor extends Component {
     const dispatch = this.props.dispatch;
     const challengeId = this.props.challenge.id;
     const activeFile = this.props.activeFile;
-    const challengeType = this.props.challenge.challengeType;
+    const challengeType = parseInt(this.props.challenge.challengeType);
     const editorLayout = this.editorLayout;
 
     this.state.codeMirrorData.map(function(codeMirror) {
@@ -137,13 +137,16 @@ class Editor extends Component {
       /* eslint-disable no-fallthrough */
       switch (codeMirror[0]) {
         case 'challengeSeed':
-        case 'solutions':
-          if (challengeType !== 5 && challengeType !== 1) {
-            mode = 'htmlmixed';
-          }
-          break;
         case 'head':
         case 'tail':
+        case 'solutions':
+          if (challengeType !== 7 && challengeType !== 5 && challengeType !== 1) {
+            mode = 'htmlmixed';
+          }
+          else {
+            mode = 'javascript';
+          }
+          break;
         case 'tests':
           mode = 'javascript';
           break;
@@ -180,6 +183,10 @@ class Editor extends Component {
 
       editor.setSize(cData.dimens[1], cData.dimens[0]);
 
+      editor.setOption("extraKeys", {
+        End: "goLineRight",
+        Home: "goLineLeft"
+      });
       editor.on('change', function(instance) {
         updateChallenge(dispatch,
           {
