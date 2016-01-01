@@ -28,7 +28,7 @@ app.post('/export', function(req, res, next) {
   Object.keys(req.body.data).forEach(function(file) {
     var fileData = req.body.data[file];
     fs.writeFile(config.fccPath + file,
-      JSON.stringify(fileData, null, 2),
+      JSON.stringify(fileData, null, 2) + "\n",
       function(err) {
         console.error(err);
       }
