@@ -104,6 +104,9 @@ class Editor extends Component {
       }
     }
 
+    // Hide the broken Misc tag
+    delete layout['misc'];
+
     for(var k in layout){
       finalHTML.push(
         <div className = {"tab " + k} data-tab = {k} key = {k}>
@@ -207,6 +210,7 @@ class Editor extends Component {
 
   render() {
     let tabButtons = [];
+    delete this.editorLayout.misc;
     for(var tab in this.editorLayout){
       tabButtons.push(
         <div key = {tab} onClick = {this.toggleTabs} data-tab = {tab} className = "tabSelector">
