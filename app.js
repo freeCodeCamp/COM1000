@@ -27,6 +27,46 @@ app.post('/export', function(req, res, next) {
   /*eslint-enable*/
   Object.keys(req.body.data).forEach(function(file) {
     var fileData = req.body.data[file];
+    var orderer = {
+      "id": 1,
+      "title": 2,
+      "description": 3,
+      "releasedon": 4,
+      "head": 5,
+      "challengeseed": 6,
+      "tail": 7,
+      "solutions": 8,
+      "tests": 9,
+      "type": 10,
+      "mdnlinks": 11,
+      "challengetype": 12,
+      "isbeta": 13,
+      "namecn": 14,
+      "descriptioncn": 15,
+      "namefr": 16,
+      "descriptionfr": 17,
+      "nameru": 18,
+      "descriptionru": 19,
+      "namees": 20,
+      "descriptiones": 21,
+      "namept": 22,
+      "descriptionpt": 23
+    };
+    fileData.challenges = fileData.challenges.map(function(challenge){
+      var newData = {};
+      var keys = Object.keys(challenge);
+      keys.sort(function(a,b){
+        if(orderer.hasOwnProperty(a.toLowerCase()) && orderer.hasOwnProperty(b.toLowerCase())){
+          return(orderer[a.toLowerCase()]-orderer[b.toLowerCase()]);
+        }
+        return -99;
+      });
+      keys.forEach(function(key){
+        newData[key] = challenge[key];
+      });
+      console.log(keys);
+      return(newData);
+    });
     fs.writeFile(config.fccPath + file,
       JSON.stringify(fileData, null, 2),
       function(err) {
