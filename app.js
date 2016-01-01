@@ -68,7 +68,7 @@ app.post('/export', function(req, res, next) {
       return(newData);
     });
     fs.writeFile(config.fccPath + file,
-      JSON.stringify(fileData, null, 2),
+      JSON.stringify(fileData, null, 2) + "\n",
       function(err) {
         console.error(err);
       }
