@@ -76,6 +76,7 @@ app.post('/export', function(req, res, next) {
         console.error(err);
       }
     );
+    res.end();
   });
 });
 
