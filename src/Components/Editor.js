@@ -97,7 +97,7 @@ class Editor extends Component {
           }
         }
         else {
-          if(layout['misc'].indexOf(unrenderedCodeMirror) < 0 && layout[j].indexOf(unrenderedCodeMirror) < 0) {
+          if(layout['misc'] && layout['misc'].indexOf(unrenderedCodeMirror) < 0 && layout[j].indexOf(unrenderedCodeMirror) < 0) {
             layout['misc'].push(unrenderedCodeMirror);
           }
         }

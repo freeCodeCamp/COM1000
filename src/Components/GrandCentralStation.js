@@ -74,12 +74,12 @@ class GrandCentralStation extends Component {
     const dispatch = this.props.dispatch;
     let self = this;
     $.ajax({
-      url: "./headerConfig.json",
+      url: "./editorLayout.json",
       async: true
     }).done(function(headerConfigData){
       self.editorLayout = headerConfigData;
       $.ajax({
-        url: "./editorLayout.json",
+        url: "./headerConfig.json",
         async: true
       }).done(function(editorLayoutData){
         self.challengeSkeleton = editorLayoutData;
