@@ -81,9 +81,11 @@ class Editor extends Component {
         }
       }
       return (
-        <div key = {data[0]}>
+        <div className = {data[0]} key = {data[0]}>
           <h3>{data[0]}</h3>
-          <textarea defaultValue = {data[1]} id = {data[0]} ></textarea>
+          <textarea defaultValue = {data[1]} id = {data[0]} >
+
+          </textarea>
         </div>
       );
     });
@@ -105,11 +107,12 @@ class Editor extends Component {
     }
 
     // Hide the broken Misc tag
+    delete layout['docs'];
     delete layout['misc'];
 
     for(var k in layout){
       finalHTML.push(
-        <div className = {"tab " + k} data-tab = {k} key = {k}>
+        <div className = {"mainEditorTab " + k+"Tab"} data-tab = {k} key = {k}>
           {layout[k]}
         </div>
       );
@@ -117,13 +120,14 @@ class Editor extends Component {
 
     this.state = {
       codeMirrorData: codeMirrorData,
-      unrenderedCodeMirrors: finalHTML
+      unrenderedCodeMirrors: finalHTML,
+      init: false
     };
   }
 
   toggleTabs(e) {
-    $('.tab').hide();
-    $('.' + e.target.dataset.tab).show();
+    $('.mainEditorTab').hide();
+    $('.' + e.target.dataset.tab + "Tab").show();
   }
 
   componentDidMount() {
@@ -166,50 +170,52 @@ class Editor extends Component {
           cHeader = header;
         }
       }
-
-      let editor = CodeMirror.fromTextArea(
-        document.getElementById(codeMirror[0]),
-        {
-          lineNumbers: true,
-          mode: mode,
-          theme: 'monokai',
-          runnable: true,
-          matchBrackets: true,
-          autoCloseBrackets: true,
-          scrollbarStyle: 'simple',
-          lineWrapping: true,
-          gutters: ['CodeMirror-lint-markers']
-        }
-      );
-
-      let cData = editorLayout[cHeader].filter((data) => {return(data.name === codeMirror[0]);})[0];
-
-      editor.setSize(cData.dimens[1], cData.dimens[0]);
-
-      editor.setOption("extraKeys", {
-        End: "goLineRight",
-        Home: "goLineLeft"
-      });
-      editor.on('change', function(instance) {
-        updateChallenge(dispatch,
+      if(document.getElementById(codeMirror[0]) !== null) {
+        let editor = CodeMirror.fromTextArea(
+          document.getElementById(codeMirror[0]),
           {
-            id: challengeId,
-            props: {
-              [codeMirror[0]]: instance.getValue()
-            },
-            activeFile: activeFile
-
+            lineNumbers: true,
+            mode: mode,
+            theme: 'monokai',
+            runnable: true,
+            matchBrackets: true,
+            autoCloseBrackets: true,
+            scrollbarStyle: 'simple',
+            lineWrapping: true,
+            gutters: ['CodeMirror-lint-markers']
           }
         );
-      });
-      codeMirrors.push(editor);
+
+        let cData = editorLayout[cHeader].filter((data) => {
+          return (data.name === codeMirror[0]);
+        })[0];
+
+        editor.setSize(cData.dimens[1], cData.dimens[0]);
+
+        editor.setOption("extraKeys", {
+          End: "goLineRight",
+          Home: "goLineLeft"
+        });
+        editor.on('change', function (instance) {
+          updateChallenge(dispatch,
+            {
+              id: challengeId,
+              props: {
+                [codeMirror[0]]: instance.getValue()
+              },
+              activeFile: activeFile
+
+            }
+          );
+        });
+        codeMirrors.push(editor);
+      }
     });
-    $('.tab').hide();
-    $('.meta').show();
   }
 
   render() {
     let tabButtons = [];
+    delete this.editorLayout.docs;
     delete this.editorLayout.misc;
     for(var tab in this.editorLayout){
       tabButtons.push(
@@ -217,6 +223,12 @@ class Editor extends Component {
           {tab.split("_").join(" ")}
         </div>
       );
+    }
+    if(!this.state.init) {
+      setTimeout(() => {
+        this.toggleTabs({target: {dataset: {tab: 'meta'}}});
+        this.state.init = true;
+      }, 200);
     }
     return (
       <div className = "editorContainer">

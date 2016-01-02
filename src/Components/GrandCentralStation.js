@@ -252,8 +252,6 @@ class GrandCentralStation extends Component {
             }
           }
 
-          console.log(index);
-
           oldFileStore.challenges.splice(index, 0, dupe);
 
           let AddedChallenge = {fileStore: oldFileStore};
@@ -289,16 +287,6 @@ class GrandCentralStation extends Component {
           <p>You are attempting to load a file but you have unsaved changes.</p>
           {discard} {save}
         </Modal>
-      );
-
-      let snackBar = (
-        <Snackbar
-          action='OK'
-          autoHideDuration={3000}
-          message='File saved successfully'
-          onActionTouchTap={this.handleSnackbar}
-          ref='snackbar'
-          />
       );
 
       let elements = [];
@@ -362,6 +350,15 @@ class GrandCentralStation extends Component {
 
         if (Object.keys(this.props.view === 'ChallengeEdit' &&
         this.props.activeChallenge).length) {
+          let snackBar = (
+            <Snackbar
+              action='OK'
+              autoHideDuration={2000}
+              message='File saved successfully'
+              onActionTouchTap={this.handleSnackbar}
+              ref='snackbar'
+            />
+          );
           return (
             <div onKeyDown={this.handleKeyboardSave}>
               <div id='modal'>{modal}</div>

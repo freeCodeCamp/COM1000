@@ -1,15 +1,19 @@
 {
+  "docs": [
+    "DIMENSIONS: GIVE ALL DIMENSIONS AS [HEIGHT, WIDTH]"
+  ],
   "meta": [
     {"name": "title", "dimens": ["30px", "auto"]},
-    {"name": "description", "dimens": ["180px", "auto"]},
+    {"name": "description", "dimens": ["auto", "auto"]},
+    {"name": "MDNlinks", "dimens": ["auto", "auto"]},
     {"name": "releasedOn", "dimens": ["30px", "auto"]},
     {"name": "type", "dimens": ["30px", "auto"]},
     {"name": "challengeType", "dimens": ["30px", "auto"]}
   ],
   "code": [
-    {"name": "head", "dimens": ["180px", "auto"]},
+    {"name": "head", "dimens": ["auto", "auto"]},
     {"name": "challengeSeed", "dimens": ["360px", "auto"]},
-    {"name": "tail", "dimens": ["180px", "auto"]}
+    {"name": "tail", "dimens": ["auto", "auto"]}
   ],
   "test_solutions": [
     {"name": "solutions", "dimens": ["240px", "auto"]},

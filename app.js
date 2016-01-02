@@ -63,10 +63,13 @@ app.post('/export', function(req, res, next) {
       });
       keys.forEach(function(key){
         newData[key] = challenge[key];
+        if(key === "challengeType"){
+          newData[key] = parseInt(challenge[key]);
+        }
       });
-      console.log(keys);
       return(newData);
     });
+    fileData.order = typeof fileData.order ==='number' ? parseInt(fileData.order) : 0;
     fs.writeFile(config.fccPath + file,
       JSON.stringify(fileData, null, 2) + "\n",
       function(err) {
