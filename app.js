@@ -69,7 +69,7 @@ app.post('/export', function(req, res, next) {
       });
       return(newData);
     });
-    fileData.order = typeof fileData.order ==='number' ? parseInt(fileData.order) : 0;
+    fileData.order = parseInt(fileData.order,10);
     fs.writeFile(config.fccPath + file,
       JSON.stringify(fileData, null, 2) + "\n",
       function(err) {
