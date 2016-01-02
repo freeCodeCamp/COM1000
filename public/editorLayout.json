@@ -1,0 +1,37 @@
+{
+  "docs": [
+    "DIMENSIONS: GIVE ALL DIMENSIONS AS [HEIGHT, WIDTH]"
+  ],
+  "meta": [
+    {"name": "title", "dimens": ["30px", "auto"]},
+    {"name": "description", "dimens": ["auto", "auto"]},
+    {"name": "MDNlinks", "dimens": ["auto", "auto"]},
+    {"name": "releasedOn", "dimens": ["30px", "auto"]},
+    {"name": "type", "dimens": ["30px", "auto"]},
+    {"name": "challengeType", "dimens": ["30px", "auto"]}
+  ],
+  "code": [
+    {"name": "head", "dimens": ["auto", "auto"]},
+    {"name": "challengeSeed", "dimens": ["360px", "auto"]},
+    {"name": "tail", "dimens": ["auto", "auto"]}
+  ],
+  "test_solutions": [
+    {"name": "solutions", "dimens": ["240px", "auto"]},
+    {"name": "tests", "dimens": ["240px", "auto"]}
+  ],
+  "localization": [
+    {"name": "nameCn", "dimens": ["30px", "auto"]},
+    {"name": "descriptionCn", "dimens": ["180px", "auto"]},
+    {"name": "nameFr", "dimens": ["30px", "auto"]},
+    {"name": "descriptionFr", "dimens": ["180px", "auto"]},
+    {"name": "nameRu", "dimens": ["30px", "auto"]},
+    {"name": "descriptionRu", "dimens": ["180px", "auto"]},
+    {"name": "nameEs", "dimens": ["30px", "auto"]},
+    {"name": "descriptionEs", "dimens": ["180px", "auto"]},
+    {"name": "namePt", "dimens": ["30px", "auto"]},
+    {"name": "descriptionPt", "dimens": ["180px", "auto"]}
+  ],
+  "misc": [
+
+  ]
+}

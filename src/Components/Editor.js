@@ -3,6 +3,7 @@ import './../../node_modules/codemirror/theme/monokai.css';
 import './../../node_modules/codemirror/addon/scroll/simplescrollbars.css';
 
 import React, {Component} from 'react';
+import $ from 'jquery';
 
 import {updateChallenge} from './../actions/editorActions';
 
@@ -57,6 +58,18 @@ class Editor extends Component {
       return (field[0] !== 'id');
     });
 
+    this.editorLayout = this.props.editorLayout;
+
+    let layout = {
+
+    };
+
+    for(var header in this.editorLayout){
+      layout[header] = [];
+    }
+
+    let finalHTML = [];
+
     unrenderedCodeMirrors = codeMirrorData.map(function(data) {
       if (Array.isArray(data[1])) {
         if (data[0] === 'tests') {
@@ -68,17 +81,53 @@ class Editor extends Component {
         }
       }
       return (
-        <div key = {data[0]}>
+        <div className = {data[0]} key = {data[0]}>
           <h3>{data[0]}</h3>
-          <textarea defaultValue = {data[1]} id = {data[0]} ></textarea>
+          <textarea defaultValue = {data[1]} id = {data[0]} >
+
+          </textarea>
         </div>
       );
     });
 
+    for(var i = 0; i < unrenderedCodeMirrors.length; i++){
+      let unrenderedCodeMirror = unrenderedCodeMirrors[i];
+      for(var j in this.editorLayout){
+        if(this.editorLayout[j].map((head) => {return(head.name)}).indexOf(unrenderedCodeMirror.key) > -1){
+          if(layout[j].indexOf(unrenderedCodeMirror) < 0) {
+            layout[j].push(unrenderedCodeMirror);
+          }
+        }
+        else {
+          if(layout['misc'] && layout['misc'].indexOf(unrenderedCodeMirror) < 0 && layout[j].indexOf(unrenderedCodeMirror) < 0) {
+            layout['misc'].push(unrenderedCodeMirror);
+          }
+        }
+      }
+    }
+
+    // Hide the broken Misc tag
+    delete layout['docs'];
+    delete layout['misc'];
+
+    for(var k in layout){
+      finalHTML.push(
+        <div className = {"mainEditorTab " + k+"Tab"} data-tab = {k} key = {k}>
+          {layout[k]}
+        </div>
+      );
+    }
+
     this.state = {
       codeMirrorData: codeMirrorData,
-      unrenderedCodeMirrors: unrenderedCodeMirrors
+      unrenderedCodeMirrors: finalHTML,
+      init: false
     };
+  }
+
+  toggleTabs(e) {
+    $('.mainEditorTab').hide();
+    $('.' + e.target.dataset.tab + "Tab").show();
   }
 
   componentDidMount() {
@@ -86,7 +135,8 @@ class Editor extends Component {
     const dispatch = this.props.dispatch;
     const challengeId = this.props.challenge.id;
     const activeFile = this.props.activeFile;
-    const challengeType = this.props.challenge.challengeType;
+    const challengeType = parseInt(this.props.challenge.challengeType);
+    const editorLayout = this.editorLayout;
 
     this.state.codeMirrorData.map(function(codeMirror) {
       // Determine mode
@@ -94,13 +144,16 @@ class Editor extends Component {
       /* eslint-disable no-fallthrough */
       switch (codeMirror[0]) {
         case 'challengeSeed':
-        case 'solutions':
-          if (challengeType !== 5 && challengeType !== 1) {
-            mode = 'htmlmixed';
-          }
-          break;
         case 'head':
         case 'tail':
+        case 'solutions':
+          if (challengeType !== 7 && challengeType !== 5 && challengeType !== 1) {
+            mode = 'htmlmixed';
+          }
+          else {
+            mode = 'javascript';
+          }
+          break;
         case 'tests':
           mode = 'javascript';
           break;
@@ -108,44 +161,83 @@ class Editor extends Component {
           mode = 'htmlmixed';
           break;
       }
+
+      let cHeader = "";
+
       /* eslint-enable no-fallthrough */
-
-      let editor = CodeMirror.fromTextArea(
-        document.getElementById(codeMirror[0]),
-        {
-          lineNumbers: true,
-          mode: mode,
-          theme: 'monokai',
-          runnable: true,
-          matchBrackets: true,
-          autoCloseBrackets: true,
-          scrollbarStyle: 'simple',
-          lineWrapping: true,
-          gutters: ['CodeMirror-lint-markers']
+      for(var header in editorLayout){
+        if(editorLayout[header].map((field) => {return(field.name);}).indexOf(codeMirror[0]) > -1){
+          cHeader = header;
         }
-      );
-
-      editor.on('change', function(instance) {
-        updateChallenge(dispatch,
+      }
+      if(document.getElementById(codeMirror[0]) !== null) {
+        let editor = CodeMirror.fromTextArea(
+          document.getElementById(codeMirror[0]),
           {
-            id: challengeId,
-            props: {
-              [codeMirror[0]]: instance.getValue()
-            },
-            activeFile: activeFile
-
+            lineNumbers: true,
+            mode: mode,
+            theme: 'monokai',
+            runnable: true,
+            matchBrackets: true,
+            autoCloseBrackets: true,
+            scrollbarStyle: 'simple',
+            lineWrapping: true,
+            gutters: ['CodeMirror-lint-markers']
           }
         );
-      });
 
-      codeMirrors.push(editor);
+        let cData = editorLayout[cHeader].filter((data) => {
+          return (data.name === codeMirror[0]);
+        })[0];
+
+        editor.setSize(cData.dimens[1], cData.dimens[0]);
+
+        editor.setOption("extraKeys", {
+          End: "goLineRight",
+          Home: "goLineLeft"
+        });
+        editor.on('change', function (instance) {
+          updateChallenge(dispatch,
+            {
+              id: challengeId,
+              props: {
+                [codeMirror[0]]: instance.getValue()
+              },
+              activeFile: activeFile
+
+            }
+          );
+        });
+        codeMirrors.push(editor);
+      }
     });
   }
 
   render() {
+    let tabButtons = [];
+    delete this.editorLayout.docs;
+    delete this.editorLayout.misc;
+    for(var tab in this.editorLayout){
+      tabButtons.push(
+        <div key = {tab} onClick = {this.toggleTabs} data-tab = {tab} className = "tabSelector">
+          {tab.split("_").join(" ")}
+        </div>
+      );
+    }
+    if(!this.state.init) {
+      setTimeout(() => {
+        this.toggleTabs({target: {dataset: {tab: 'meta'}}});
+        this.state.init = true;
+      }, 200);
+    }
     return (
-      <div>
-        {this.state.unrenderedCodeMirrors}
+      <div className = "editorContainer">
+        <div className = "selectors">
+          {tabButtons}
+        </div>
+        <div className = "tabContainer">
+          {this.state.unrenderedCodeMirrors}
+        </div>
       </div>
     );
   }

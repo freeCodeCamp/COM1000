@@ -8,7 +8,7 @@ import {
   fileSelect,
   loadFileExplorer,
   fileSaved
-} from './../actions/editorActions';
+} from '../actions/editorActions';
 
 import $ from 'jquery';
 
@@ -50,12 +50,20 @@ class GrandCentralStation extends Component {
     this.handleFileSelect = this.handleFileSelect.bind(this);
     this.handleFileIsSelected = this.handleFileIsSelected.bind(this);
     this.handleChallengeClick = this.handleChallengeClick.bind(this);
+    this.handleChallengeDupe = this.handleChallengeDupe.bind(this);
     this.openModal = this.openModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
     this.modalSave = this.modalSave.bind(this);
     this.forceOpenNav = this.forceOpenNav.bind(this);
     this.handleSnackbar = this.handleSnackbar.bind(this);
     this.handleKeyboardSave = this.handleKeyboardSave.bind(this);
+
+    this.challengeSkeleton = {};
+
+    // Dimensions are given as [ Height, Width ]
+
+    this.editorLayout = {};
+
     this.state = {
       modalIsOpen: false
     };
@@ -64,8 +72,21 @@ class GrandCentralStation extends Component {
 
   componentWillMount() {
     const dispatch = this.props.dispatch;
-    $.getJSON('/files', (files) => {
-      loadFileExplorer(dispatch, {files});
+    let self = this;
+    $.ajax({
+      url: "./editorLayout.json",
+      async: true
+    }).done(function(headerConfigData){
+      self.editorLayout = headerConfigData;
+      $.ajax({
+        url: "./headerConfig.json",
+        async: true
+      }).done(function(editorLayoutData){
+        self.challengeSkeleton = editorLayoutData;
+        $.getJSON('/files', (files) => {
+          loadFileExplorer(dispatch, {files});
+        });
+      });
     });
   }
 
@@ -144,11 +165,15 @@ class GrandCentralStation extends Component {
       });
     }
 
-  handleFileIsSelected(file, title, directory) {
+    handleFileIsSelected(file, title, directory) {
       let dispatch = this.props.dispatch;
       let newFileStoreObject = this.props.fileStore;
       file = JSON.parse(file);
       newFileStoreObject = file;
+
+      newFileStoreObject.challenges = newFileStoreObject.challenges.map((challenge) => {
+        return Object.assign({}, this.challengeSkeleton, challenge);
+      });
 
       loadFile(dispatch, {
         title: `${directory}/${title}`,
@@ -174,44 +199,15 @@ class GrandCentralStation extends Component {
 
     handleChallengeClick(id) {
       let dispatch = this.props.dispatch;
-
-      let oldFileStore = this.props.fileStore;
-      let currentFile = this.props.activeFile;
-
+      let challengeSkeleton = this.challengeSkeleton;
+      let oldFileStore = Object.assign({}, this.props.fileStore);
       if (id === 'new') {
         $.getJSON('/mongoid', function(mongoid) {
           mongoid = mongoid.objectId;
-          oldFileStore[currentFile].challenges.push({
+          oldFileStore.challenges.unshift(Object.assign({}, challengeSkeleton, {
             'id': mongoid,
-            'title': mongoid,
-            'description': [
-              ''
-            ],
-            'tests': [
-              ''
-            ],
-            'challengeSeed': [
-              ''
-            ],
-            'MDNlinks': [
-              ''
-            ],
-            'solutions': [
-              ''
-            ],
-            'type': '',
-            'challengeType': 0,
-            'nameCn': '',
-            'descriptionCn': [],
-            'nameFr': '',
-            'descriptionFr': [],
-            'nameRu': '',
-            'descriptionRu': [],
-            'nameEs': '',
-            'descriptionEs': [],
-            'namePt': '',
-            'descriptionPt': []
-          });
+            'title': mongoid
+          }));
 
           let AddedChallenge = {fileStore: oldFileStore};
 
@@ -228,6 +224,43 @@ class GrandCentralStation extends Component {
           }).pop(), 'view': 'ChallengeEdit'
         });
       }
+    }
+
+    handleChallengeDupe(e) {
+      let dispatch = this.props.dispatch;
+      let oldFileStore = Object.assign({}, this.props.fileStore);
+      $.getJSON('/mongoid', function(mongoid) {
+        mongoid = mongoid.objectId;
+        let dupe;
+        oldFileStore.challenges.map((challenge) => {
+          if(challenge.id === e.target.dataset.challengid){
+            dupe = Object.assign({}, challenge, {
+              'id': mongoid,
+              'title': challenge.title + " - Copy"
+            });
+          }
+          return(challenge);
+        });
+        if(typeof dupe !== 'undefined') {
+          let index = oldFileStore.challenges.length;
+          let originalLength = index;
+          for(var i = 0; i < originalLength; i++){
+            let challenge = oldFileStore.challenges[i];
+            if(challenge.id === e.target.dataset.challengid){
+              index = i+1;
+              break;
+            }
+          }
+
+          oldFileStore.challenges.splice(index, 0, dupe);
+
+          let AddedChallenge = {fileStore: oldFileStore};
+
+          createChallenge(dispatch,
+            AddedChallenge
+          );
+        }
+      });
     }
 
     render() {
@@ -254,16 +287,6 @@ class GrandCentralStation extends Component {
           <p>You are attempting to load a file but you have unsaved changes.</p>
           {discard} {save}
         </Modal>
-      );
-
-      let snackBar = (
-        <Snackbar
-          action='OK'
-          autoHideDuration={3000}
-          message='File saved successfully'
-          onActionTouchTap={this.handleSnackbar}
-          ref='snackbar'
-          />
       );
 
       let elements = [];
@@ -308,6 +331,7 @@ class GrandCentralStation extends Component {
           selectChallenges = (
             <SelectChallenge
               challengeClick = {this.handleChallengeClick}
+              handleChallengeDupe = {this.handleChallengeDupe}
               data = {this.props.fileStore}
               />
           );
@@ -326,6 +350,15 @@ class GrandCentralStation extends Component {
 
         if (Object.keys(this.props.view === 'ChallengeEdit' &&
         this.props.activeChallenge).length) {
+          let snackBar = (
+            <Snackbar
+              action='OK'
+              autoHideDuration={2000}
+              message='File saved successfully'
+              onActionTouchTap={this.handleSnackbar}
+              ref='snackbar'
+            />
+          );
           return (
             <div onKeyDown={this.handleKeyboardSave}>
               <div id='modal'>{modal}</div>
@@ -333,7 +366,7 @@ class GrandCentralStation extends Component {
                 {leftNav}
                 {menu}
                 <div style = {{ 'marginTop': '70px' }}>
-                  <Editor id={this.props.activeChallenge.id} />
+                  <Editor editorLayout = {this.editorLayout} id={this.props.activeChallenge.id} />
                 </div>
               </div>
               {snackBar}
