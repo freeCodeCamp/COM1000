@@ -5,6 +5,7 @@ var bodyParser = require('body-parser');
 var fs = require('fs');
 var config = require('./config');
 var ObjectID = require('mongodb').ObjectID;
+var headerConfig = require('./public/headerConfig.json');
 
 var app = express();
 
@@ -53,6 +54,7 @@ app.post('/export', function(req, res, next) {
       "descriptionpt": 23
     };
     fileData.challenges = fileData.challenges.map(function(challenge){
+      challenge = Object.assign({}, headerConfig, challenge);
       var newData = {};
       var keys = Object.keys(challenge);
       keys.sort(function(a,b){
@@ -65,6 +67,9 @@ app.post('/export', function(req, res, next) {
         newData[key] = challenge[key];
         if(key === "challengeType"){
           newData[key] = parseInt(challenge[key]);
+        }
+        if(key === "releasedOn" && newData[key].length === 0){
+          newData[key] = "October 1, 2014";
         }
       });
       return(newData);
