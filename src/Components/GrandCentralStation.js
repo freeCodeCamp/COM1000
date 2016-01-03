@@ -138,7 +138,9 @@ class GrandCentralStation extends Component {
         data,
         success: function(_data) {
           fileSaved(this.props.dispatch);
-          this.refs.snackbar.show();
+          if(typeof this.refs.snackbar !== 'undefined') {
+            this.refs.snackbar.show();
+          }
         }.bind(this)
       });
     }
@@ -276,6 +278,16 @@ class GrandCentralStation extends Component {
           secondary={true} />
       );
 
+      let snackBar = (
+        <Snackbar
+          action='OK'
+          autoHideDuration={2000}
+          message='File saved successfully'
+          onActionTouchTap={this.handleSnackbar}
+          ref='snackbar'
+        />
+      );
+
       // Modal.setAppElement('#modal');
       let modal = (
         <Modal
@@ -350,15 +362,6 @@ class GrandCentralStation extends Component {
 
         if (Object.keys(this.props.view === 'ChallengeEdit' &&
         this.props.activeChallenge).length) {
-          let snackBar = (
-            <Snackbar
-              action='OK'
-              autoHideDuration={2000}
-              message='File saved successfully'
-              onActionTouchTap={this.handleSnackbar}
-              ref='snackbar'
-            />
-          );
           return (
             <div onKeyDown={this.handleKeyboardSave}>
               <div id='modal'>{modal}</div>
@@ -373,7 +376,6 @@ class GrandCentralStation extends Component {
             </div>
           );
         } else {
-
 
           return (
             <div>
