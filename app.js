@@ -74,6 +74,7 @@ app.post('/export', function(req, res, next) {
       JSON.stringify(fileData, null, 2) + "\n",
       function(err) {
         console.error(err);
+        res.end();
       }
     );
     res.end();
