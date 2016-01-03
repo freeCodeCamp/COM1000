@@ -76,6 +76,7 @@ app.post('/export', function(req, res, next) {
         console.error(err);
       }
     );
+    res.end();
   });
 });
 
@@ -91,6 +92,7 @@ app.get('/files', (req, res, next) => {
     }, {});
     return res.json(fileObj);
   });
+  res.end();
 });
 
 app.get('/files/:filePath/:fileName', (req, res, next) => {
@@ -103,6 +105,7 @@ app.get('/files/:filePath/:fileName', (req, res, next) => {
     }
     return res.json(data);
   });
+  res.end();
 });
 
 /*eslint-disable*/
