@@ -352,12 +352,14 @@ class GrandCentralStation extends Component {
         let menu =
         <Menu elements = {elements} />;
         let leftNav = this.props.files ?
-        <FileExplorer
+        <div className = "menu">
+          <FileExplorer
           dispatch= {this.props.dispatch}
           files= {this.props.files}
           loadFile= {this.handleFileIsSelected}
           ref='leftNav'
           />
+        </div>
         : null;
 
         if (Object.keys(this.props.view === 'ChallengeEdit' &&

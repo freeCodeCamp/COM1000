@@ -2,6 +2,11 @@ body {
   font-family: 'Ubuntu';
 }
 
+.menu > div >div:nth-child(2) {
+  bottom: 0px;
+  height: auto!important;
+}
+
 .ReactModalPortal * {
   z-index: 10;
 }
