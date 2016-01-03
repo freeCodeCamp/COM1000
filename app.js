@@ -64,9 +64,27 @@ app.post('/export', function(req, res, next) {
         return -99;
       });
       keys.forEach(function(key){
-        newData[key] = challenge[key];
         if(key === "challengeType"){
           newData[key] = parseInt(challenge[key]);
+        }
+        else {
+          if(typeof challenge[key] !== 'object'){
+            if(challenge[key].length > 0){
+              newData[key] = challenge[key];
+            }
+          }
+          else {
+            if(Array.isArray(challenge[key])){
+              if(challenge[key].length > 0){
+                newData[key] = challenge[key];
+              }
+            }
+            else {
+              if(Object.keys(challenge[key]).length > 0){
+                newData[key] = challenge[key];
+              }
+            }
+          }
         }
         if(key === "releasedOn" && newData[key].length === 0){
           newData[key] = "October 1, 2014";

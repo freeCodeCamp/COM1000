@@ -47,17 +47,6 @@ class Editor extends Component {
 
     var unrenderedCodeMirrors = [];
 
-    for (let i in this.props.challenge ) {
-      if (i) {
-        var challengeDataField = this.props.challenge[i];
-        codeMirrorData.push([i, challengeDataField]);
-      }
-    }
-
-    codeMirrorData = codeMirrorData.filter(function(field) {
-      return (field[0] !== 'id');
-    });
-
     this.editorLayout = this.props.editorLayout;
 
     let layout = {
@@ -68,9 +57,70 @@ class Editor extends Component {
       layout[header] = [];
     }
 
+    let codeMirrorSkeleton = [];
+
+    for(var layoutObjIndex in this.props.editorLayout){
+      var layoutObj = this.props.editorLayout[layoutObjIndex];
+      codeMirrorSkeleton = codeMirrorSkeleton.concat(layoutObj);
+    }
+
+    codeMirrorSkeleton.shift();
+
+    codeMirrorSkeleton = codeMirrorSkeleton.map((flatLayoutObj) => {
+      return(flatLayoutObj.name);
+    });
+
+    for (let i in this.props.challenge ) {
+      if (i) {
+        var challengeDataField = this.props.challenge[i];
+        codeMirrorData.push([i, challengeDataField]);
+      }
+    }
+
+    let codeMirrorDataHeaders = codeMirrorData.map((data) => {
+      return(data[0]);
+    });
+
+    codeMirrorSkeleton.filter((val) => {
+      if(codeMirrorDataHeaders.indexOf(val) < 0) {
+        codeMirrorData.push([val, ""]);
+      }
+    });
+
+    codeMirrorData = codeMirrorData.filter(function(field) {
+      return (field[0] !== 'id');
+    });
+
     let finalHTML = [];
 
+    var orderer = {
+      "id": 1,
+      "title": 2,
+      "description": 3,
+      "releasedon": 4,
+      "head": 5,
+      "challengeseed": 6,
+      "tail": 7,
+      "solutions": 8,
+      "tests": 9,
+      "type": 10,
+      "mdnlinks": 11,
+      "challengetype": 12,
+      "isbeta": 13,
+      "namecn": 14,
+      "descriptioncn": 15,
+      "namefr": 16,
+      "descriptionfr": 17,
+      "nameru": 18,
+      "descriptionru": 19,
+      "namees": 20,
+      "descriptiones": 21,
+      "namept": 22,
+      "descriptionpt": 23
+    };
+
     unrenderedCodeMirrors = codeMirrorData.map(function(data) {
+
       if (Array.isArray(data[1])) {
         if (data[0] === 'tests') {
           data[1] = data[1].join('EOL\n');
@@ -111,6 +161,12 @@ class Editor extends Component {
     delete layout['misc'];
 
     for(var k in layout){
+      layout[k].sort(function(a,b){
+        if(orderer.hasOwnProperty(a.key.toLowerCase()) && orderer.hasOwnProperty(b.key.toLowerCase())){
+          return(orderer[a.key.toLowerCase()]-orderer[b.key.toLowerCase()]);
+        }
+        return -99;
+      });
       finalHTML.push(
         <div className = {"mainEditorTab " + k+"Tab"} data-tab = {k} key = {k}>
           {layout[k]}
