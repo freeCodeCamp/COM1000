@@ -100,6 +100,7 @@ app.post('/export', function(req, res, next) {
         res.end();
       }
     );
+    res.end();
   });
 });
 
