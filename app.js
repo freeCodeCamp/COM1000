@@ -78,6 +78,9 @@ app.post('/export', function(req, res, next) {
               if(challenge[key].length > 0){
                 newData[key] = challenge[key];
               }
+              else if(typeof headerConfig[key] !== 'undefined'){
+                newData[key] = [];
+              }
             }
             else {
               if(Object.keys(challenge[key]).length > 0){
