@@ -24,6 +24,6 @@ This **will** alter the challenge files in your Free Code Camp `/seed/challenges
 ## To Run
 * `npm start`
 
-## Contirbuting
- All prs should be filed against the master branch.
- Once the master branch is deemed necessary to be pushed into the production branch a pr will be made and QA'd
+## Contributing
+ All prs should be filed against the `master` branch.  
+ Once the `master` branch is deemed necessary to be pushed into the `production` branch a pr will be made and QA'd
