@@ -1,5 +1,5 @@
 # COM1000 (Challenge-O-Mattic 1000)
-Free Code Camp's Challenge Editor (Very Alpha)
+Free Code Camp's Challenge Editor
 
 ## Note
 This **will** alter the challenge files in your Free Code Camp `/seed/challenges` directory!
