@@ -21,6 +21,8 @@ function parser(key) {
       return function(val) { return val.split(/\s*EOS\s*/); };
     case 'tests':
       return function(val) { return val.split(/\s*EOL\s*/); };
+    case 'challengeType':
+      return function(val) { return(parseInt(val)); };
     default:
       return function(val) { return val; };
   }

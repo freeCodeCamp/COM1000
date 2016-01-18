@@ -70,12 +70,7 @@ app.post('/export', function(req, res, next) {
         else {
           if(typeof challenge[key] !== 'object'){
             if(challenge[key].length > 0){
-              if(challenge[key].replace(/\s/gi, '').toLowerCase().match(/("true"|false)/gi).length > 0) {
-                newData[key] = Boolean(challenge[key]);
-              }
-              else {
-                newData[key] = challenge[key];
-              }
+              newData[key] = challenge[key];
             }
           }
           else {

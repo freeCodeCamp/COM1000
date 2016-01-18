@@ -1,7 +1,8 @@
 # COM1000 (Challenge-O-Mattic 1000)
-Free Code Camp's Challenge Editor (Very Alpha)
+Free Code Camp's Challenge Editor
 
 ## Note
+Users should only download the production version of COM1000, production is not guaranteed to be safe.
 This **will** alter the challenge files in your Free Code Camp `/seed/challenges` directory!
 
 
@@ -22,3 +23,6 @@ This **will** alter the challenge files in your Free Code Camp `/seed/challenges
 ## To Run
 * `npm start`
 
+## Contirbuting
+ All prs should be filed against the master branch.
+ Once the master branch is deemed necessary to be pushed into the production branch a pr will be made and QA'd
