@@ -69,8 +69,13 @@ app.post('/export', function(req, res, next) {
         }
         else {
           if(typeof challenge[key] !== 'object'){
-            if(challenge[key].length > 0){
-              newData[key] = challenge[key];
+            if(challenge[key].length > 0) {
+              if(challenge[key].replace(/\s/gi, '').toLowerCase().match(/(true|false)/gi).length > 0) {
+                newData[key] = boolean(challenge[key].replace(/\s/gi, '').toLowerCase());
+              }
+              else {
+                newData[key] = challenge[key];
+              }
             }
           }
           else {
