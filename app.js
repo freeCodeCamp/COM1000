@@ -5,6 +5,7 @@ var bodyParser = require('body-parser');
 var fs = require('fs');
 var config = require('./config');
 var ObjectID = require('mongodb').ObjectID;
+var headerConfig = require('./public/headerConfig.json');
 
 var app = express();
 
@@ -27,12 +28,87 @@ app.post('/export', function(req, res, next) {
   /*eslint-enable*/
   Object.keys(req.body.data).forEach(function(file) {
     var fileData = req.body.data[file];
+    var orderer = {
+      "id": 1,
+      "title": 2,
+      "description": 3,
+      "releasedon": 4,
+      "head": 5,
+      "challengeseed": 6,
+      "tail": 7,
+      "solutions": 8,
+      "tests": 9,
+      "type": 10,
+      "mdnlinks": 11,
+      "challengetype": 12,
+      "isbeta": 13,
+      "namecn": 14,
+      "descriptioncn": 15,
+      "namefr": 16,
+      "descriptionfr": 17,
+      "nameru": 18,
+      "descriptionru": 19,
+      "namees": 20,
+      "descriptiones": 21,
+      "namept": 22,
+      "descriptionpt": 23
+    };
+    fileData.challenges = fileData.challenges.map(function(challenge){
+      challenge = Object.assign({}, headerConfig, challenge);
+      var newData = {};
+      var keys = Object.keys(challenge);
+      keys.sort(function(a,b){
+        if(orderer.hasOwnProperty(a.toLowerCase()) && orderer.hasOwnProperty(b.toLowerCase())){
+          return(orderer[a.toLowerCase()]-orderer[b.toLowerCase()]);
+        }
+        return -99;
+      });
+      keys.forEach(function(key){
+        if(key === "challengeType"){
+          newData[key] = parseInt(challenge[key]);
+        }
+        else {
+          if(typeof challenge[key] !== 'object'){
+            if(challenge[key].length > 0){
+              if(challenge[key].replace(/\s/gi, '').toLowerCase().match(/("true"|false)/gi).length > 0) {
+                newData[key] = Boolean(challenge[key]);
+              }
+              else {
+                newData[key] = challenge[key];
+              }
+            }
+          }
+          else {
+            if(Array.isArray(challenge[key])){
+              if(challenge[key].length > 0){
+                newData[key] = challenge[key];
+              }
+              else if(typeof headerConfig[key] !== 'undefined'){
+                newData[key] = [];
+              }
+            }
+            else {
+              if(Object.keys(challenge[key]).length > 0){
+                newData[key] = challenge[key];
+              }
+            }
+          }
+        }
+        if(key === "releasedOn" && newData[key].length === 0){
+          newData[key] = "October 1, 2014";
+        }
+      });
+      return(newData);
+    });
+    fileData.order = parseInt(fileData.order,10);
     fs.writeFile(config.fccPath + file,
-      JSON.stringify(fileData, null, 2),
+      JSON.stringify(fileData, null, 2) + "\n",
       function(err) {
         console.error(err);
+        res.end();
       }
     );
+    res.end();
   });
 });
 
