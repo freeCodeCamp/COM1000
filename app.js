@@ -53,19 +53,26 @@ app.post('/export', function(req, res, next) {
       "namept": 22,
       "descriptionpt": 23
     };
+    var newFileData = {};
     Object.keys(fileData).forEach(function(key){
-      if(fileData[key].replace(/\s/gi, '').toLowerCase() === "true" || fileData[key].replace(/\s/gi, '').toLowerCase() === "false") {
-        if(fileData[key].replace(/\s/gi, '').toLowerCase() === "true"){
-          fileData[key] = true;
+      if(typeof fileData[key] === 'string') {
+        if (fileData[key].replace(/\s/gi, '').toLowerCase() === "true" || fileData[key].replace(/\s/gi, '').toLowerCase() === "false") {
+          if (fileData[key].replace(/\s/gi, '').toLowerCase() === "true") {
+            newFileData[key] = true;
+          }
+          else {
+            newFileData[key] = false;
+          }
         }
         else {
-          fileData[key] = false;
+          newFileData[key] = fileData[key];
         }
       }
       else {
-        fileData[key] = fileData[key];
+        newFileData[key] = fileData[key];
       }
     });
+    console.log(newFileData);
     fileData.challenges = fileData.challenges.map(function(challenge){
       challenge = Object.assign({}, headerConfig, challenge);
       var newData = {};
