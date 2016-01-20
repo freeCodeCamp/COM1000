@@ -53,26 +53,6 @@ app.post('/export', function(req, res, next) {
       "namept": 22,
       "descriptionpt": 23
     };
-    var newFileData = {};
-    Object.keys(fileData).forEach(function(key){
-      if(typeof fileData[key] === 'string') {
-        if (fileData[key].replace(/\s/gi, '').toLowerCase() === "true" || fileData[key].replace(/\s/gi, '').toLowerCase() === "false") {
-          if (fileData[key].replace(/\s/gi, '').toLowerCase() === "true") {
-            newFileData[key] = true;
-          }
-          else {
-            newFileData[key] = false;
-          }
-        }
-        else {
-          newFileData[key] = fileData[key];
-        }
-      }
-      else {
-        newFileData[key] = fileData[key];
-      }
-    });
-    console.log(newFileData);
     fileData.challenges = fileData.challenges.map(function(challenge){
       challenge = Object.assign({}, headerConfig, challenge);
       var newData = {};
@@ -125,6 +105,26 @@ app.post('/export', function(req, res, next) {
       });
       return(newData);
     });
+    var newFileData = {};
+    Object.keys(fileData).forEach(function(key){
+      if(typeof fileData[key] === 'string') {
+        if (fileData[key].replace(/\s/gi, '').toLowerCase() === "true" || fileData[key].replace(/\s/gi, '').toLowerCase() === "false") {
+          if (fileData[key].replace(/\s/gi, '').toLowerCase() === "true") {
+            newFileData[key] = true;
+          }
+          else {
+            newFileData[key] = false;
+          }
+        }
+        else {
+          newFileData[key] = fileData[key];
+        }
+      }
+      else {
+        newFileData[key] = fileData[key];
+      }
+    });
+    fileData = newFileData;
     fileData.order = parseInt(fileData.order,10);
     fs.writeFile(config.fccPath + file,
       JSON.stringify(fileData, null, 2) + "\n",
