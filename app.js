@@ -65,7 +65,7 @@ app.post('/export', function(req, res, next) {
       });
       keys.forEach(function(key){
         if(key === "challengeType"){
-          newData[key] = parseInt(challenge[key]);
+          newData[key] = parseFloat(challenge[key]);
         }
         else {
           if(typeof challenge[key] !== 'object'){
@@ -125,7 +125,7 @@ app.post('/export', function(req, res, next) {
       }
     });
     fileData = newFileData;
-    fileData.order = parseInt(fileData.order,10);
+    fileData.order = parseFloat(fileData.order,10);
     fs.writeFile(config.fccPath + file,
       JSON.stringify(fileData, null, 2) + "\n",
       function(err) {
