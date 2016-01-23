@@ -65,7 +65,7 @@ app.post('/export', function(req, res, next) {
       });
       keys.forEach(function(key){
         if(key === "challengeType"){
-          newData[key] = parseInt(challenge[key]);
+          newData[key] = parseFloat(challenge[key]);
         }
         else {
           if(typeof challenge[key] !== 'object'){
