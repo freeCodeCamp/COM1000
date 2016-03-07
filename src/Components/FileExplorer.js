@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {LeftNav} from 'material-ui';
-import injectTapEventPlugin from 'react-tap-event-plugin';
 import $ from 'jquery';
 
 const leftNavStyle = {
@@ -13,7 +12,6 @@ const leftNavStyle = {
 export default class FileExplorer extends Component {
   constructor(props) {
     super(props);
-    injectTapEventPlugin();
   }
 
   handleSelectedFile() {
