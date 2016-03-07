@@ -66,7 +66,6 @@ class GrandCentralStation extends Component {
     this.state = {
       modalIsOpen: false
     };
-    injectTapEventPlugin();
   }
 
   componentWillMount() {
