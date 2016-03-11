@@ -18,7 +18,6 @@ import Editor from './Editor';
 import FileExplorer from './FileExplorer';
 import Modal from 'react-modal';
 
-import injectTapEventPlugin from 'react-tap-event-plugin';
 import {RaisedButton, Snackbar} from 'material-ui';
 
 import './../style.css';
@@ -67,7 +66,6 @@ class GrandCentralStation extends Component {
     this.state = {
       modalIsOpen: false
     };
-    injectTapEventPlugin();
   }
 
   componentWillMount() {
