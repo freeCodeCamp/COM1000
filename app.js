@@ -42,15 +42,15 @@ app.post('/export', function(req, res, next) {
       "mdnlinks": 11,
       "challengetype": 12,
       "isbeta": 13,
-      "namecn": 14,
+      "titlecn": 14,
       "descriptioncn": 15,
-      "namefr": 16,
+      "titlefr": 16,
       "descriptionfr": 17,
-      "nameru": 18,
+      "titleru": 18,
       "descriptionru": 19,
-      "namees": 20,
+      "titlees": 20,
       "descriptiones": 21,
-      "namept": 22,
+      "titlept": 22,
       "descriptionpt": 23
     };
     fileData.challenges = fileData.challenges.map(function(challenge){
