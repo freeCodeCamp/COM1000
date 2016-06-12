@@ -141,6 +141,7 @@ app.get('/files', (req, res, next) => {
   var fileObj;
   fs.readdir(config.fccPath, (err, files) => {
     if (err) {
+      console.error(err);
       return next(err);
     }
     fileObj = files.reduce((acc, curr) => {

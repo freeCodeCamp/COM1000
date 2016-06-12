@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import GrandCentralStation from './Components/GrandCentralStation';
+import Master from './Components/Master';
 
 export default class App extends Component {
   render() {
     return (
-      <GrandCentralStation />
+      <Master />
     );
   }
 }
