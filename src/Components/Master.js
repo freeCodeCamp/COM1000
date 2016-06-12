@@ -6,12 +6,17 @@ import './../style.css';
 
 import FileMenu from './FileMenu';
 import ChallengeSelector from './ChallengeSelector';
+import Editor from './Editor';
 
 import {
   loadFileTree,
   loadFile,
   loadChallenge
 } from './../actions';
+
+import {
+  textToSeed
+} from './../libs/seed';
 
 const getJSON = $.getJSON;
 const connector = connect(function(state, props) {
@@ -56,11 +61,15 @@ class Master extends Component {
     const disp = this.props.dispatch;
     const targetFile = e.target.dataset.file;
     let newFileStore = {};
+    if(this.props.currentDataSeed && this.props.currentDataSeed !== this.props.savedDataSeed) {
+      console.warn('save changes first!');
+      return;
+    }
     getJSON('/files/' + targetFile, (data) => {
       const filePath = targetFile.split('/');
       newFileStore[filePath[0]] = {};
       newFileStore[filePath[0]][filePath[1]] = JSON.parse(data);
-      loadFile(disp, {currentFile: targetFile, loadedFiles: newFileStore});
+      loadFile(disp, {currentFile: targetFile, loadedFiles: newFileStore, savedDataSeed: textToSeed(JSON.stringify(targetFile)), currentDataSeed: textToSeed(JSON.stringify(targetFile))});
     })
   }
 
@@ -76,6 +85,15 @@ class Master extends Component {
       this.doLoadFileTree();
       this.init = true;
     }
+
+    const header = (
+      <div className = "header">
+        <h3>COM</h3>
+        <div className = "headerButton" onClick = {this.doExport}>
+          Save
+        </div>
+      </div>
+    );
 
     let fileData = {challenges: []};
     const fileIndexData = !!this.props.currentFile ? this.props.currentFile.split(/\//gi) : null;
@@ -104,26 +122,32 @@ class Master extends Component {
 
     if(this.props.currentChallenge) {
       return(
-        <div>
-          <div onClick = {() => {loadChallenge(this.props.dispatch, {currentChallenge: null})}}>
-            Back
+        <div className="Master">
+          {header}
+          <div className = "banner">
+            <div onClick = {() => {loadChallenge(this.props.dispatch, {currentChallenge: null})}}>
+              Back
+            </div>
           </div>
-          Editor
+          <Editor />
         </div>
       );
     }
     else {
       return (
         <div className="Master">
-          <FileMenu
-            data={this.props.files}
-            functions={
-              {
-                loadFile: this.doLoadFile
+          {header}
+          <div className = "inner">
+            <FileMenu
+              data={this.props.files}
+              functions={
+                {
+                  loadFile: this.doLoadFile
+                }
               }
-            }
-          />
-          {selector}
+            />
+            {selector}
+          </div>
         </div>
       );
     }

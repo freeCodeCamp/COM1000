@@ -4,6 +4,16 @@ body {
   color: white;
 }
 
+input[type="text"] {
+  outline: none;
+  border: none;
+  border-bottom: 2px solid rgb(51, 51, 51);
+  color: #0ab2e8;
+  padding: 10px;
+  min-width: 575px;
+  font-size: 24px;
+}
+
 body, #root, .Master {
   margin: 0;
   padding: 0;
@@ -15,11 +25,40 @@ body, #root, .Master {
 }
 
 .Master {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.Master > * {
+  flex: 0 0 auto;
+  position: relative;
+}
+
+.header {
+  background-color: white;
+  color: black;
+  padding: 10px;
   display: flex;
 }
 
-.Master {
+.header > *{
   flex: 0 0 auto;
+}
+
+.header > h3 {
+  flex: 1 0 auto;
+}
+
+.header > .headerButton {
+  float: right;
+  background-color: rgb(121, 121, 121);
+  color: white;
+  padding: 20px;
+}
+
+.inner {
+  display: flex;
 }
 
 li {
@@ -71,4 +110,24 @@ li {
 .createNew > .typeSelector > * {
   flex: 0 0 auto;
   margin: auto;
+}
+
+.banner {
+  background-color: rgb(81, 81, 81);
+  padding: 10px;
+  left: 0;
+  right: 0;
+}
+
+.banner > * {
+  background-color: rgb(121, 121, 121);
+  padding: 30px;
+  float: left;
+  position: relative;
+}
+
+.Editor {
+  flex: 1 0 auto;
+  padding: 10px;
+  background-color: rgb(121, 121, 121);
 }

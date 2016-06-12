@@ -3,6 +3,8 @@ const initialState = {
   loadedFiles: {},
   currentFile: null,
   currentChallenge: null,
+  savedDataSeed: null,
+  currentDataSeed: null,
   view: 'ChallengeSelect'
 };
 
