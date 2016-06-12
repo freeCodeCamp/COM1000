@@ -18,3 +18,9 @@ export function loadChallenge(dispatch, payload) {
     payload
   });
 }
+
+export default {
+  loadFileTree: loadFileTree,
+  loadFile: loadFile,
+  loadChallenge: loadChallenge
+};

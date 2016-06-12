@@ -6,8 +6,6 @@ import {
   textToSeed //Converts Text to a number
 } from './../libs/seed';
 
-import {} from './../actions';
-
 class FileMenu extends Component {
   constructor(props) {
     super(props);

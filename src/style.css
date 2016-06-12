@@ -131,3 +131,20 @@ li {
   padding: 10px;
   background-color: rgb(121, 121, 121);
 }
+
+.stepCreator {
+  display: flex;
+  position: relative;
+}
+
+.left, .right {
+  height: 100%;
+  min-height: 100px;
+  flex: 1 0 auto;
+  width: 50px;
+  background-color: red;
+}
+
+.stepImg > img {
+  display: block;
+}

@@ -1,20 +1,9 @@
-const initialState = {
-  files: {},
-  loadedFiles: {},
-  currentFile: null,
-  currentChallenge: null,
-  savedDataSeed: null,
-  currentDataSeed: null,
-  view: 'ChallengeSelect'
-};
+import { combineReducers } from 'redux'
 
-export default function(prevState = initialState, action) {
-  switch (action.type) {
-    case 'loadFileTree':
-    case 'loadFile':
-    case 'loadChallenge':
-      return(Object.assign({}, prevState, action.payload));
-    default:
-      return (prevState);
-  }
-}
+import editorReducer from './Components/Editors/reducer'
+import stepReducer from './Components/Editors/StepChallengeEditor/reducer'
+
+export default combineReducers({
+  editorReducer,
+  stepReducer
+});

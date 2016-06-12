@@ -1,10 +1,9 @@
-export function textToSeed(text) {
-  return (
-    text.replace(/\s/gi, '')
-      .split('')
-      .map((char) => {
-        return(char.charCodeAt(0));
-      })
-      .reduce((x,y) => {return(x*y)})
-  );
+const crypto = require('crypto');
+
+export function textToSeed(data) {
+  let hash = crypto.createHash('sha256');
+
+  hash.update(data);
+
+  return(hash.digest('hex'));
 }

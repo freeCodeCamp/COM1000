@@ -12,16 +12,17 @@ import {
   loadFileTree,
   loadFile,
   loadChallenge
-} from './../actions';
+} from './Editors/actions';
 
 import {
   textToSeed
 } from './../libs/seed';
 
 const getJSON = $.getJSON;
-const connector = connect(function(state, props) {
+
+/*const connector = connect(function(state, props) {
   return(state);
-});
+});*/
 
 class Master extends Component {
   constructor(props) {
@@ -49,12 +50,8 @@ class Master extends Component {
       }
     });
     loadChallenge(disp, {
-      currentChallenge: {
-        id: newChallenge.id,
-        name: newChallenge.title,
-        data: newChallenge
-      }
-    });
+        currentChallenge: newChallenge
+      });
   }
 
   doLoadFile(e) {
@@ -84,6 +81,7 @@ class Master extends Component {
     if (!this.init) {
       this.doLoadFileTree();
       this.init = true;
+      return(<div></div>);
     }
 
     const header = (
@@ -129,7 +127,9 @@ class Master extends Component {
               Back
             </div>
           </div>
-          <Editor />
+          <Editor
+            currentChallenge = {this.props.currentChallenge}
+          />
         </div>
       );
     }
@@ -154,4 +154,8 @@ class Master extends Component {
   }
 }
 
-export default connector(Master);
+const mapStateToProps = (state) => {
+  return state.editorReducer;
+};
+
+export default connect(mapStateToProps)(Master);
