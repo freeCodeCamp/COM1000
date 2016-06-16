@@ -20,9 +20,11 @@ import {
 
 const getJSON = $.getJSON;
 
-/*const connector = connect(function(state, props) {
+/*
+const connector = connect(function(state, props) {
   return(state);
-});*/
+});
+*/
 
 class Master extends Component {
   constructor(props) {
@@ -37,8 +39,8 @@ class Master extends Component {
 
   doOpenChallenge(e) {
     const disp = this.props.dispatch;
-    const filePath = this.props.currentFile.split('/');
-    const newChallenge = this.props.loadedFiles[filePath[0]][filePath[1]].challenges.reduce((x,y) => {
+    const filePath = this.props.editorReducer.currentFile.split('/');
+    const newChallenge = this.props.editorReducer.loadedFiles[filePath[0]][filePath[1]].challenges.reduce((x,y) => {
       if(x && x.id && x.id === e.target.dataset.challenge) {
         return(x);
       }
@@ -49,16 +51,17 @@ class Master extends Component {
         return(null);
       }
     });
-    loadChallenge(disp, {
-        currentChallenge: newChallenge
-      });
+    loadChallenge(disp, newChallenge);
   }
 
   doLoadFile(e) {
     const disp = this.props.dispatch;
     const targetFile = e.target.dataset.file;
     let newFileStore = {};
-    if(this.props.currentDataSeed && this.props.currentDataSeed !== this.props.savedDataSeed) {
+    if(
+      this.props.editorReducer.currentDataSeed
+      && this.props.editorReducer.currentDataSeed !== this.props.editorReducer.savedDataSeed
+    ) {
       console.warn('save changes first!');
       return;
     }
@@ -66,6 +69,7 @@ class Master extends Component {
       const filePath = targetFile.split('/');
       newFileStore[filePath[0]] = {};
       newFileStore[filePath[0]][filePath[1]] = JSON.parse(data);
+      //console.log(newFileStore);
       loadFile(disp, {currentFile: targetFile, loadedFiles: newFileStore, savedDataSeed: textToSeed(JSON.stringify(targetFile)), currentDataSeed: textToSeed(JSON.stringify(targetFile))});
     })
   }
@@ -78,6 +82,7 @@ class Master extends Component {
   }
 
   render() {
+    //console.log(this.props);
     if (!this.init) {
       this.doLoadFileTree();
       this.init = true;
@@ -94,14 +99,18 @@ class Master extends Component {
     );
 
     let fileData = {challenges: []};
-    const fileIndexData = !!this.props.currentFile ? this.props.currentFile.split(/\//gi) : null;
+    const fileIndexData = !!this.props.editorReducer.currentFile
+      ? this.props.editorReducer.currentFile.split(/\//gi)
+      : null;
 
-    if(!!this.props.loadedFiles && !!fileIndexData) {
-      fileData = this.props.loadedFiles[fileIndexData[0]][fileIndexData[1]]
+    if(!!this.props.editorReducer.loadedFiles && !!fileIndexData) {
+      fileData = this.props.editorReducer.loadedFiles[fileIndexData[0]][fileIndexData[1]]
     }
 
+    //console.log(fileData);
+
     const selector = (() => {
-      if(this.props.currentFile) {
+      if(this.props.editorReducer.currentFile) {
         return (
           <ChallengeSelector
             fileData={fileData}
@@ -118,7 +127,7 @@ class Master extends Component {
       }
     })();
 
-    if(this.props.currentChallenge) {
+    if(this.props.challengeReducer.id.length > 0) {
       return(
         <div className="Master">
           {header}
@@ -128,7 +137,7 @@ class Master extends Component {
             </div>
           </div>
           <Editor
-            currentChallenge = {this.props.currentChallenge}
+            currentChallenge = {this.props.challengeReducer}
           />
         </div>
       );
@@ -139,7 +148,7 @@ class Master extends Component {
           {header}
           <div className = "inner">
             <FileMenu
-              data={this.props.files}
+              data={this.props.editorReducer.files}
               functions={
                 {
                   loadFile: this.doLoadFile
@@ -155,7 +164,7 @@ class Master extends Component {
 }
 
 const mapStateToProps = (state) => {
-  return state.editorReducer;
+  return state;
 };
 
 export default connect(mapStateToProps)(Master);

@@ -6,7 +6,7 @@ class Editor extends Component {
   constructor(props) {
     super(props);
   }
-  
+
   render() {
     const view = (() => {
       switch (this.props.currentChallenge.challengeType) {

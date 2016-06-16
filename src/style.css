@@ -138,7 +138,6 @@ li {
 }
 
 .left, .right {
-  height: 100%;
   min-height: 100px;
   flex: 1 0 auto;
   width: 50px;

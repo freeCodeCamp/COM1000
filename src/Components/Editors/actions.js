@@ -7,15 +7,16 @@ export function loadFileTree(dispatch, payload) {
 
 export function loadFile(dispatch, payload) {
   dispatch({
-    type: 'loadFile',
-    payload
+    payload,
+    type: 'loadFile'
   });
 }
 
 export function loadChallenge(dispatch, payload) {
   dispatch({
-    type: 'loadChallenge',
-    payload
+    command: 'loadChallenge',
+    payload,
+    type: 'action'
   });
 }
 

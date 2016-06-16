@@ -1,11 +1,14 @@
-const initialState = {
-  data: {}
-};
+const initialState = {};
 
 export default function(prevState = initialState, action) {
-  switch (action.type) {
+  switch (action.command) {
     case 'createStep':
-      return Object.assign({}, prevState, action.payload);
+      let copy = Object.assign({}, prevState);
+      console.log(action.payload);
+      copy.description = [...prevState.description, action.payload];
+      console.log(copy);
+      let newState = Object.assign({}, prevState, copy);
+      return newState;
     default:
       return (prevState);
   }

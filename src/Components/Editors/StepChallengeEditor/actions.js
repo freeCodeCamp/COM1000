@@ -1,11 +1,12 @@
-export function createStep(dispatch) {
+export function createStep(dispatch, cb) {
   dispatch({
-    type: 'createStep',
+    type: 'action',
+    command: 'createStep',
     payload: [
       "",
       "",
-      "New Title",
+      "",
       ""
     ]
-  })
+  }, cb);
 }
